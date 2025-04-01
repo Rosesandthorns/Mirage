@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mirage Park Dev Hub</title>
-  <!-- Updated Firebase Scripts with type="module" -->
+  <!-- Firebase Scripts with type="module" -->
   <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app.js" type="module"></script>
   <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-firestore.js" type="module"></script>
   <style>
@@ -79,9 +79,11 @@
     </form>
   </div>
 
-  <script>
+  <script type="module">
     // Initialize Firebase with your project settings
-    const { initializeApp } = firebase;
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.1.3/firebase-app.js';
+    import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, getDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/9.1.3/firebase-firestore.js';
+
     const firebaseConfig = {
       apiKey: "AIzaSyC8923ceG_Hcp5k3v0qjO_yYgKEoXB4n_A",
       authDomain: "miragepark-1e12a.firebaseapp.com",
@@ -89,7 +91,6 @@
     };
 
     const app = initializeApp(firebaseConfig);
-    const { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, getDoc, serverTimestamp } = firebase.firestore;
     const db = getFirestore(app);
 
     // Sign-in functionality
