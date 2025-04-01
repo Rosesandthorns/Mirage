@@ -1,80 +1,261 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MiragePark Task Manager</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mirage Park Dev Hub</title>
+    
+    <!-- Firebase Scripts with type="module" -->
+    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app.js" type="module"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-firestore.js" type="module"></script>
+
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f0f0f0;
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background-color: white;
+            margin: 0;
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #ffffff;
         }
-        .task-form {
-            margin-bottom: 20px;
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
         }
-        .task-item {
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-            margin-bottom: 10px;
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
         }
-        .task-item h3 {
-            margin-top: 0;
+
+        .header h1 {
+            font-size: 2.5em;
+            margin: 0;
         }
-        button {
-            background-color: #4CAF50;
-            color: white;
+
+        .countdown-timer {
+            text-align: center;
+            font-family: monospace;
+            font-size: 1.5em;
+            margin: 20px 0;
+        }
+
+        .category-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .category-button {
             padding: 10px 20px;
+            background-color: #282828;
+            color: #ffffff;
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 1em;
+            width: 120px;
+            text-align: center;
         }
-        button:hover {
-            background-color: #45a049;
+
+        .category-button:hover {
+            background-color: #333;
         }
-        input, select {
+
+        .task-form {
+            background-color: #282828;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .task-form input, .task-form select {
+            width: 100%;
             padding: 8px;
-            margin: 5px;
-            width: 200px;
+            margin: 5px 0;
+            background-color: #333;
+            border: 1px solid #444;
+            color: #fff;
+            border-radius: 4px;
+        }
+
+        .task-form button {
+            background-color: #333;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .task-form button:hover {
+            background-color: #555;
+        }
+
+        .tasks-section {
+            background-color: #282828;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .task {
+            background-color: #333;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+
+        .completed-tasks-section {
+            background-color: #282828;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .sign-in-form {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #1e1e1e;
+            padding: 20px;
+            border-radius: 6px;
+            z-index: 1000;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        .sign-in-form.active {
+            display: block;
+        }
+
+        .sign-in-form .form-group {
+            margin-bottom: 10px;
+        }
+
+        .sign-in-form label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .sign-in-form input {
+            width: 100%;
+            padding: 8px;
+            background: #333;
+            border: 1px solid #444;
+            color: #e0e0e0;
+            border-radius: 4px;
+        }
+
+        .sign-in-form .form-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .sign-in-form .form-button {
+            padding: 8px 15px;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            background: #333;
+            color: #e0e0e0;
+        }
+
+        .sign-in-form .form-button:hover {
+            background: #555;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 0 10px;
+            }
+            
+            .task-form input, .task-form select {
+                width: 100%;
+                margin: 5px 0;
+            }
+
+            .category-buttons {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 10px;
+            }
+
+            .category-button {
+                width: 100%;
+                max-width: 200px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>MiragePark Task Manager</h1>
-        
+        <div class="header">
+            <h1>Mirage Park Dev Hub</h1>
+            <div class="countdown-timer">
+                <h3>Next Major Update In:</h3>
+                <div id="countdownTimer"></div>
+            </div>
+            <div class="category-buttons">
+                <button class="category-button" onclick="navigateToCategory('holos')">Holos</button>
+                <button class="category-button" onclick="navigateToCategory('animatronics')">Animatronics</button>
+                <button class="category-button" onclick="navigateToCategory('viruses')">Viruses</button>
+                <button class="category-button" onclick="navigateToCategory('special')">Special</button>
+                <button class="category-button" onclick="navigateToCategory('map')">Map</button>
+            </div>
+            <button onclick="showSignInForm()" id="signInButton" style="margin-top: 10px;">Sign In</button>
+        </div>
+
         <div class="task-form">
-            <h2>Add New Task</h2>
-            <input type="text" id="taskDescription" placeholder="Task Description">
-            <select id="taskPriority">
-                <option value="1">Low</option>
-                <option value="2">Medium</option>
-                <option value="3">High</option>
-            </select>
-            <select id="taskType">
+            <input type="text" id="taskDescription" placeholder="Task Description" required>
+            <input type="number" id="taskPriority" placeholder="Task Priority" min="1" max="5" required>
+            <select id="taskType" required>
                 <option value="coding">Coding</option>
-                <option value="design">Design</option>
-                <option value="testing">Testing</option>
+                <option value="art">Art</option>
+                <option value="modelling">Modelling</option>
+                <option value="refining">Refining</option>
             </select>
-            <input type="text" id="taskOwner" placeholder="Task Owner">
             <button onclick="addTask()">Add Task</button>
         </div>
 
-        <div id="tasksList"></div>
+        <div class="tasks-section">
+            <h2>Tasks To Complete</h2>
+            <div id="tasks"></div>
+        </div>
+
+        <div class="completed-tasks-section">
+            <h2>Completed Tasks Log</h2>
+            <div id="completedTasks"></div>
+        </div>
     </div>
 
-    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-firestore.js"></script>
-    <script>
+    <div class="sign-in-form" id="signInForm">
+        <h3>Sign In</h3>
+        <form id="signInContent">
+            <div class="form-group">
+                <label for="signInUsername">Username:</label>
+                <input type="text" id="signInUsername" required>
+            </div>
+            <div class="form-group">
+                <label for="signInPassword">Password:</label>
+                <input type="password" id="signInPassword" required>
+            </div>
+            <div class="form-buttons">
+                <button type="button" onclick="closeSignInForm()">Cancel</button>
+                <button type="submit">Sign In</button>
+            </div>
+        </form>
+    </div>
+
+    <script type="module">
         // Initialize Firebase
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.1.3/firebase-app.js';
+        import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, getDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/9.1.3/firebase-firestore.js';
+
         const firebaseConfig = {
             apiKey: "AIzaSyC8923ceG_Hcp5k3v0qjO_yYgKEoXB4n_A",
             authDomain: "miragepark-1e12a.firebaseapp.com",
@@ -84,56 +265,90 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // Get the current user for the Owner field
-        let currentUser = null;
-        onAuthStateChanged(getAuth(app), (user) => {
-            currentUser = user?.uid || 'Anonymous';
+        // Sign-in functionality
+        function showSignInForm() {
+            document.getElementById('signInForm').classList.add('active');
+        }
+
+        function closeSignInForm() {
+            document.getElementById('signInForm').classList.remove('active');
+        }
+
+        // Make functions globally accessible
+        window.showSignInForm = showSignInForm;
+        window.closeSignInForm = closeSignInForm;
+
+        // Sign-in form submission handler
+        document.getElementById('signInContent').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            try {
+                const username = document.getElementById('signInUsername').value;
+                const password = document.getElementById('signInPassword').value;
+
+                if (!username || !password) {
+                    alert('Please enter both username and password');
+                    return;
+                }
+
+                // Query Firestore for user credentials
+                const userRef = doc(db, 'Accounts', username);
+                const userDoc = await getDoc(userRef);
+
+                if (!userDoc.exists()) {
+                    alert('Username not found');
+                    return;
+                }
+
+                const userData = userDoc.data();
+                if (userData.password !== password) {
+                    alert('Incorrect password');
+                    return;
+                }
+
+                // Successful sign-in
+                alert(`Welcome, ${username}!`);
+                document.getElementById('signInButton').textContent = `Signed in as ${username}`;
+                closeSignInForm();
+            } catch (error) {
+                console.error("Error signing in:", error);
+                alert("Error signing in. Please try again.");
+            }
         });
 
+        // Category navigation handler
+        function navigateToCategory(category) {
+            const filePath = `${category}.html`;
+            window.location.href = filePath;
+        }
+
+        // Task management functions
         async function addTask() {
             try {
                 const taskDescription = document.getElementById('taskDescription').value;
                 const taskPriority = document.getElementById('taskPriority').value;
                 const taskType = document.getElementById('taskType').value;
-                const taskOwner = document.getElementById('taskOwner').value || currentUser;
 
+                // Validate input
                 if (!taskDescription || !taskPriority || !taskType) {
                     alert('Please fill in all fields');
                     return;
                 }
 
-                // Get the next ticket number
-                const counterRef = doc(db, 'Counters', 'ticketCounter');
-                const counterDoc = await getDoc(counterRef);
-
-                let currentNumber = 1;
-                if (counterDoc.exists()) {
-                    currentNumber = counterDoc.data().currentNumber + 1;
-                }
-
-                // Update the counter
-                await setDoc(counterRef, {
-                    currentNumber: currentNumber
-                }, {
-                    merge: true
-                });
-
                 // Add task to Firestore
                 const taskRef = collection(db, 'Tasks');
                 const docRef = await addDoc(taskRef, {
-                    DESCRIPTION: taskDescription,
-                    TIME: serverTimestamp(),
-                    URGENCY: parseInt(taskPriority),
-                    TYPE: taskType,
-                    TICKETNUMBER: currentNumber,
-                    OWNER: taskOwner
+                    description: taskDescription,
+                    priority: parseInt(taskPriority),
+                    type: taskType,
+                    time: serverTimestamp()
                 });
 
                 console.log("Task added with ID:", docRef.id);
+                // Clear form
                 document.getElementById('taskDescription').value = '';
                 document.getElementById('taskPriority').value = '';
                 document.getElementById('taskType').value = 'coding';
-                document.getElementById('taskOwner').value = '';
                 await loadTasks();
             } catch (error) {
                 console.error("Error adding task:", error);
@@ -142,62 +357,138 @@
         }
 
         async function loadTasks() {
-            const tasksDiv = document.getElementById('tasksList');
-            tasksDiv.innerHTML = '';
-
-            const tasksRef = collection(db, 'Tasks');
-            const tasksSnapshot = await getDocs(tasksRef);
-
-            tasksSnapshot.forEach(doc => {
-                const taskData = doc.data();
-                const taskHTML = `
-                    <div class="task-item">
-                        <h3>Ticket #${taskData.TICKETNUMBER}</h3>
-                        <p>Description: ${taskData.DESCRIPTION}</p>
-                        <p>Time: ${new Date(taskData.TIME.toDate()).toLocaleString()}</p>
-                        <p>Urgency: ${taskData.URGENCY}</p>
-                        <p>Type: ${taskData.TYPE}</p>
-                        <p>Owner: ${taskData.OWNER}</p>
-                        <button onclick="toggleTaskComplete('${doc.id}')">Mark as Complete</button>
-                    </div>
-                `;
-                tasksDiv.innerHTML += taskHTML;
-            });
-        }
-
-        async function toggleTaskComplete(taskId) {
             try {
-                const taskRef = doc(db, 'Tasks', taskId);
-                const taskDoc = await getDoc(taskRef);
+                const tasksRef = collection(db, 'Tasks');
+                const querySnapshot = await getDocs(tasksRef);
+                
+                const tasksDiv = document.getElementById('tasks');
+                if (tasksDiv) {
+                    tasksDiv.innerHTML = ''; // Clear current tasks
 
-                if (taskDoc.exists()) {
-                    const taskData = taskDoc.data();
-                    // Move task to CompletedTasks collection
-                    const completedTaskRef = collection(db, 'CompletedTasks');
-                    await addDoc(completedTaskRef, {
-                        DESCRIPTION: taskData.DESCRIPTION,
-                        TIME: taskData.TIME,
-                        URGENCY: taskData.URGENCY,
-                        TYPE: taskData.TYPE,
-                        TICKETNUMBER: taskData.TICKETNUMBER,
-                        OWNER: taskData.OWNER,
-                        COMPLETEDAT: serverTimestamp()
+                    querySnapshot.forEach(doc => {
+                        const taskData = doc.data();
+                        const taskDiv = document.createElement("div");
+                        taskDiv.className = "task";
+                        taskDiv.dataset.taskId = doc.id;
+                        taskDiv.innerHTML = `
+                            <span>${taskData.description}</span>
+                            <span>Priority: ${taskData.priority}</span>
+                            <span>Type: ${taskData.type}</span>
+                            <span>Time: ${taskData.time?.toDate().toLocaleString() || 'No timestamp'}</span>
+                            <button onclick="completeTask(this)">Complete</button>
+                        `;
+                        tasksDiv.appendChild(taskDiv);
                     });
-
-                    // Delete task from Tasks collection
-                    await deleteDoc(taskRef);
-
-                    // Reload tasks
-                    await loadTasks();
                 }
             } catch (error) {
-                console.error("Error toggling task complete:", error);
-                alert("Error updating task. Please try again.");
+                console.error("Error loading tasks:", error);
             }
         }
 
-        // Initialize the tasks list when the page loads
-        loadTasks();
+        async function completeTask(button) {
+            try {
+                const taskDiv = button.parentElement;
+                const taskId = taskDiv.dataset.taskId;
+                
+                // Move task to CompletedTasks collection
+                const taskRef = doc(db, 'Tasks', taskId);
+                const completedRef = collection(db, 'CompletedTasks');
+                
+                const doc = await getDoc(taskRef);
+                if (doc.exists()) {
+                    const data = doc.data();
+                    data.completedAt = serverTimestamp();
+                    
+                    await addDoc(completedRef, data);
+                    await deleteDoc(taskRef);
+                    
+                    // Remove task from DOM
+                    const tasksDiv = document.getElementById("tasks");
+                    if (tasksDiv) {
+                        tasksDiv.removeChild(taskDiv);
+                    }
+                    
+                    // Refresh completed tasks
+                    await loadCompletedTasks();
+                }
+            } catch (error) {
+                console.error("Error completing task:", error);
+            }
+        }
+
+        async function loadCompletedTasks() {
+            try {
+                const completedRef = collection(db, 'CompletedTasks');
+                const querySnapshot = await getDocs(completedRef);
+                
+                const completedDiv = document.getElementById('completedTasks');
+                if (completedDiv) {
+                    completedDiv.innerHTML = ''; // Clear current completed tasks
+
+                    querySnapshot.forEach(doc => {
+                        const taskData = doc.data();
+                        const completedDivElement = document.createElement("div");
+                        completedDivElement.className = "task";
+                        completedDivElement.innerHTML = `
+                            <span>${taskData.description}</span>
+                            <span>Priority: ${taskData.priority}</span>
+                            <span>Type: ${taskData.type}</span>
+                            <span>Completed At: ${taskData.completedAt?.toDate().toLocaleString() || 'No completion time'}</span>
+                        `;
+                        completedDiv.appendChild(completedDivElement);
+                    });
+                }
+            } catch (error) {
+                console.error("Error loading completed tasks:", error);
+            }
+        }
+
+        // Initialize on page load
+        window.onload = async function() {
+            try {
+                const tasksDiv = document.getElementById('tasks');
+                const completedDiv = document.getElementById('completedTasks');
+                if (tasksDiv && completedDiv) {
+                    await loadTasks();
+                    await loadCompletedTasks();
+                }
+                
+                // Update countdown timer
+                const targetDate = new Date("2025-12-31T00:00:00");
+                const countdownInterval = setInterval(updateCountdown, 1000);
+                updateCountdown();
+                
+                // Store interval reference to clear later
+                window.countdownInterval = countdownInterval;
+            } catch (error) {
+                console.error("Error initializing:", error);
+            }
+        }
+
+        function updateCountdown() {
+            const now = new Date();
+            const targetDate = new Date("2025-12-31T00:00:00");
+            const diff = targetDate - now;
+            
+            if (diff <= 0) {
+                document.getElementById("countdownTimer").innerText = "Update Released!";
+                clearInterval(window.countdownInterval);
+                return;
+            }
+            
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+            const minutes = Math.floor((diff / (1000 * 60)) % 60);
+            const seconds = Math.floor((diff / 1000) % 60);
+            
+            document.getElementById("countdownTimer").innerText = 
+                `${days}d ${hours}h ${minutes}m ${seconds}s`;
+        }
+
+        // Clear countdown interval when window is closed
+        window.onunload = function() {
+            clearInterval(window.countdownInterval);
+        };
     </script>
 </body>
 </html>
