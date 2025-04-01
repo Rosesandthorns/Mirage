@@ -58,9 +58,20 @@
   </style>
 </head>
 <body>
-  <!-- Your existing body content remains the same -->
+  <div id="countdownTimer"></div>
   <div class="overlay" id="overlay"></div>
-  <div class="task-form" id="taskForm"></div>
+  <div class="task-form" id="taskForm">
+    <input type="text" id="taskDescription" placeholder="Task Description">
+    <input type="number" id="taskPriority" placeholder="Task Priority">
+    <select id="taskType">
+      <option value="personal">Personal</option>
+      <option value="work">Work</option>
+      <option value="other">Other</option>
+    </select>
+    <button onclick="addTask()">Add Task</button>
+  </div>
+  <div id="tasks"></div>
+  <div id="completedTasks"></div>
   <div class="sign-in-form" id="signInForm">
     <h3>Sign In</h3>
     <form id="signInContent">
@@ -78,6 +89,7 @@
       </div>
     </form>
   </div>
+  <button onclick="showSignInForm()">Sign In</button>
 
   <script type="module">
     // Initialize Firebase with your project settings
