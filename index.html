@@ -1,405 +1,211 @@
 <!DOCTYPE html>
-
 <html lang="en">
-
 <head>
-
-  <meta charset="UTF-8" />
-
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <title>Mirage Park Dev Hub</title>
-
-  <style>
-
-    /* Base dark theme styles */
-
-    body {
-
-      background-color: #121212;
-
-      color: #e0e0e0;
-
-      font-family: Arial, sans-serif;
-
-      margin: 0;
-
-      padding: 0;
-
-    }
-
-    header {
-
-      padding: 20px;
-
-      background-color: #1e1e1e;
-
-      display: flex;
-
-      justify-content: space-between;
-
-      align-items: center;
-
-    }
-
-    h1 {
-
-      margin: 0;
-
-      font-size: 1.5rem;
-
-      font-weight: bold;
-
-      text-align: center;
-
-      flex-grow: 1;
-
-    }
-
-    .sign-in {
-
-      background-color: #333;
-
-      border: none;
-
-      color: #e0e0e0;
-
-      padding: 8px 15px;
-
-      cursor: pointer;
-
-      border-radius: 4px;
-
-      font-size: 1rem;
-
-      transition: background 0.2s;
-
-    }
-
-    .sign-in:hover {
-
-      background-color: #555;
-
-    }
-
-    /* Task List and Completed Log */
-
-    .section {
-
-      margin: 20px auto;
-
-      padding: 15px;
-
-      border: 1px solid #333;
-
-      border-radius: 6px;
-
-      background-color: #1e1e1e;
-
-      max-width: 800px;
-
-    }
-
-    .task-list, #completedTasks {
-
-      max-height: 250px;
-
-      overflow-y: auto;
-
-      margin-bottom: 10px;
-
-    }
-
-    .task {
-
-      display: flex;
-
-      flex-wrap: wrap;
-
-      justify-content: space-between;
-
-      align-items: center;
-
-      padding: 8px;
-
-      border-bottom: 1px solid #333;
-
-    }
-
-    .task:last-child {
-
-      border-bottom: none;
-
-    }
-
-    button {
-
-      background-color: #333;
-
-      border: none;
-
-      color: #e0e0e0;
-
-      padding: 8px 15px;
-
-      cursor: pointer;
-
-      border-radius: 4px;
-
-      font-size: 1rem;
-
-      transition: background 0.2s;
-
-    }
-
-    button:hover {
-
-      background-color: #555;
-
-    }
-
-    /* Options Grid */
-
-    .options {
-
-      margin: 20px auto;
-
-      text-align: center;
-
-      max-width: 600px;
-
-    }
-
-    .options .top, .options .bottom {
-
-      display: grid;
-
-      gap: 10px;
-
-    }
-
-    .options .top {
-
-      grid-template-columns: repeat(2, 1fr);
-
-      margin-bottom: 10px;
-
-    }
-
-    .options .bottom {
-
-      grid-template-columns: repeat(3, 1fr);
-
-    }
-
-    .option-button {
-
-      background-color: #2c2c2c;
-
-      border: 1px solid #444;
-
-      padding: 15px;
-
-      font-size: 1rem;
-
-      text-align: center;
-
-      cursor: pointer;
-
-      border-radius: 4px;
-
-      transition: background 0.2s;
-
-    }
-
-    .option-button:hover {
-
-      background-color: #444;
-
-    }
-
-    /* Countdown Timer */
-
-    .countdown {
-
-      text-align: center;
-
-      margin: 30px auto;
-
-      font-size: 1.5rem;
-
-    }
-
-  </style>
-
+  <!-- Previous head content remains the same -->
 </head>
-
 <body>
-
-  <header>
-
-    <h1>Mirage Park Dev Hub</h1>
-
-    <button class="sign-in">Sign In</button>
-
-  </header>
-
-
-
-  <!-- Task Section -->
-
-  <section class="section">
-
-    <h2>Tasks To Complete</h2>
-
-    <div class="task-list" id="tasks"></div>
-
-    <button onclick="addTask()">Add Task</button>
-
-  </section>
-
-
-
-  <!-- Completed Tasks Log -->
-
-  <section class="section">
-
-    <h2>Completed Tasks Log</h2>
-
-    <div id="completedTasks"></div>
-
-  </section>
-
-
-
-  <!-- Options Grid -->
-
-  <section class="options">
-
-    <div class="top">
-
-      <button class="option-button">Holos</button>
-
-      <button class="option-button">Animatronics</button>
-
-    </div>
-
-    <div class="bottom">
-
-      <button class="option-button">Viruses</button>
-
-      <button class="option-button">Special</button>
-
-      <button class="option-button">Map</button>
-
-    </div>
-
-  </section>
-
-
-
-  <!-- Countdown Timer -->
-
-  <section class="countdown">
-
-    <h2>Next Major Update In:</h2>
-
-    <div id="countdownTimer">Loading...</div>
-
-  </section>
-
-
-
-  <script>
-
-    function addTask() {
-
-      const taskDescription = prompt("Enter task description:");
-
-      const priority = prompt("Enter task priority (1-10):");
-
-      const addedBy = prompt("Your name:");
-
-      if (taskDescription && priority && addedBy) {
-
-        const taskDiv = document.createElement("div");
-
-        taskDiv.className = "task";
-
-        taskDiv.innerHTML = `
-
-          <span>${taskDescription}</span>
-
-          <span>Priority: ${priority}</span>
-
-          <span>Added by: ${addedBy}</span>
-
-          <button onclick="completeTask(this)">Complete</button>
-
-        `;
-
-        document.getElementById("tasks").appendChild(taskDiv);
-
-      }
-
-    }
-
-    function completeTask(button) {
-
-      const taskDiv = button.parentElement;
-
-      document.getElementById("tasks").removeChild(taskDiv);
-
-      const now = new Date();
-
-      const timestamp = now.toLocaleString();
-
-      const completedDiv = document.createElement("div");
-
-      completedDiv.className = "task";
-
-      completedDiv.innerHTML = taskDiv.innerHTML.replace("Complete", "") + `<span>Time: ${timestamp}</span>`;
-
-      document.getElementById("completedTasks").appendChild(completedDiv);
-
-    }
-
-    const targetDate = new Date("2025-12-31T00:00:00");
-
-    function updateCountdown() {
-
-      const now = new Date();
-
-      const diff = targetDate - now;
-
-      if (diff <= 0) {
-
-        document.getElementById("countdownTimer").innerText = "Update Released!";
-
-        clearInterval(countdownInterval);
-
-        return;
-
-      }
-
-      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-
-      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-
-      const minutes = Math.floor((diff / (1000 * 60)) % 60);
-
-      const seconds = Math.floor((diff / 1000) % 60);
-
-      document.getElementById("countdownTimer").innerText = `${days}d ${hours}h ${minutes}m ${seconds}s`;
-
-    }
-
-    const countdownInterval = setInterval(updateCountdown, 1000);
-
-    updateCountdown();
-
-  </script>
-
+  <!-- Previous HTML content remains the same -->
+  
+  <script>
+    // Initialize Firebase with your project settings
+    const firebaseConfig = {
+      apiKey: "AIzaSyC8923ceG_Hcp5k3v0qjO_yYgKEoXB4n_A",
+      authDomain: "miragepark-1e12a.firebaseapp.com",
+      projectId: "miragepark-1e12a",
+    };
+
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = app.firestore();
+
+    // Sign-in functionality
+    function showSignInForm() {
+      document.getElementById('overlay').classList.add('active');
+      document.getElementById('signInForm').classList.add('active');
+    }
+
+    function closeSignInForm() {
+      document.getElementById('overlay').classList.remove('active');
+      document.getElementById('signInForm').classList.remove('active');
+    }
+
+    document.getElementById('signInContent').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      try {
+        const username = document.getElementById('signInUsername').value;
+        const password = document.getElementById('signInPassword').value;
+
+        if (!username || !password) {
+          alert('Please enter both username and password');
+          return;
+        }
+
+        // Query Firestore for user credentials
+        const userRef = db.collection('Accounts').doc(username);
+        const userDoc = await userRef.get();
+
+        if (!userDoc.exists) {
+          alert('Username not found');
+          return;
+        }
+
+        const userData = userDoc.data();
+        if (userData.password !== password) {
+          alert('Incorrect password');
+          return;
+        }
+
+        // Successful sign-in
+        alert(`Welcome, ${username}!`);
+        document.getElementById('signInButton').textContent = `Signed in as ${username}`;
+        closeSignInForm();
+      } catch (error) {
+        console.error("Error signing in:", error);
+        alert("Error signing in. Please try again.");
+      }
+    });
+
+    // Task management functions
+    async function addTask() {
+      try {
+        const taskDescription = document.getElementById('taskDescription').value;
+        const taskPriority = document.getElementById('taskPriority').value;
+        const taskType = document.getElementById('taskType').value;
+
+        if (!taskDescription || !taskPriority || !taskType) {
+          alert('Please fill in all fields');
+          return;
+        }
+
+        // Add task to Firestore
+        const taskRef = await db.collection('Tasks').add({
+          description: taskDescription,
+          priority: parseInt(taskPriority),
+          type: taskType,
+          time: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        console.log("Task added with ID:", taskRef.id);
+        closeForm();
+        await loadTasks();
+      } catch (error) {
+        console.error("Error adding task:", error);
+        alert("Error adding task. Please try again.");
+      }
+    }
+
+    async function loadTasks() {
+      try {
+        const tasksRef = db.collection('Tasks');
+        const querySnapshot = await tasksRef.get();
+        
+        const tasksDiv = document.getElementById('tasks');
+        tasksDiv.innerHTML = ''; // Clear current tasks
+
+        querySnapshot.forEach(doc => {
+          const taskData = doc.data();
+          const taskDiv = document.createElement("div");
+          taskDiv.className = "task";
+          taskDiv.innerHTML = `
+            <span>${taskData.description}</span>
+            <span>Priority: ${taskData.priority}</span>
+            <span>Type: ${taskData.type}</span>
+            <span>Time: ${taskData.time.toDate().toLocaleString()}</span>
+            <button onclick="completeTask(this)">Complete</button>
+          `;
+          tasksDiv.appendChild(taskDiv);
+        });
+      } catch (error) {
+        console.error("Error loading tasks:", error);
+      }
+    }
+
+    async function completeTask(button) {
+      try {
+        const taskDiv = button.parentElement;
+        const taskId = taskDiv.dataset.taskId;
+        
+        // Move task to CompletedTasks collection
+        const taskRef = db.collection('Tasks').doc(taskId);
+        const completedRef = db.collection('CompletedTasks');
+        
+        const doc = await taskRef.get();
+        if (doc.exists) {
+          const data = doc.data();
+          data.completedAt = firebase.firestore.FieldValue.serverTimestamp();
+          
+          await completedRef.add(data);
+          await taskRef.delete();
+          
+          // Remove task from DOM
+          document.getElementById("tasks").removeChild(taskDiv);
+          
+          // Refresh completed tasks
+          await loadCompletedTasks();
+        }
+      } catch (error) {
+        console.error("Error completing task:", error);
+      }
+    }
+
+    async function loadCompletedTasks() {
+      try {
+        const completedRef = db.collection('CompletedTasks');
+        const querySnapshot = await completedRef.get();
+        
+        const completedDiv = document.getElementById('completedTasks');
+        completedDiv.innerHTML = ''; // Clear current completed tasks
+
+        querySnapshot.forEach(doc => {
+          const taskData = doc.data();
+          const completedDivElement = document.createElement("div");
+          completedDivElement.className = "task";
+          completedDivElement.innerHTML = `
+            <span>${taskData.description}</span>
+            <span>Priority: ${taskData.priority}</span>
+            <span>Type: ${taskData.type}</span>
+            <span>Completed At: ${taskData.completedAt.toDate().toLocaleString()}</span>
+          `;
+          completedDiv.appendChild(completedDivElement);
+        });
+      } catch (error) {
+        console.error("Error loading completed tasks:", error);
+      }
+    }
+
+    // Initialize on page load
+    window.onload = async function() {
+      try {
+        await loadTasks();
+        await loadCompletedTasks();
+        // Update countdown timer
+        const targetDate = new Date("2025-12-31T00:00:00");
+        const countdownInterval = setInterval(updateCountdown, 1000);
+        updateCountdown();
+      } catch (error) {
+        console.error("Error initializing:", error);
+      }
+    }
+
+    function updateCountdown() {
+      const now = new Date();
+      const targetDate = new Date("2025-12-31T00:00:00");
+      const diff = targetDate - now;
+      
+      if (diff <= 0) {
+        document.getElementById("countdownTimer").innerText = "Update Released!";
+        clearInterval(countdownInterval);
+        return;
+      }
+      
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+      
+      document.getElementById("countdownTimer").innerText = 
+        `${days}d ${hours}h ${minutes}m ${seconds}s`;
+    }
+  </script>
 </body>
-
 </html>
