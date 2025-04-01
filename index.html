@@ -10,7 +10,87 @@
     <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-firestore.js" type="module"></script>
 
     <style>
-        /* Existing styles remain unchanged */
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin: 0;
+        }
+
+        .task-form {
+            background-color: #282828;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .task-form input, .task-form select {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            background-color: #333;
+            border: 1px solid #444;
+            color: #fff;
+            border-radius: 4px;
+        }
+
+        .task-form button {
+            background-color: #333;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .task-form button:hover {
+            background-color: #555;
+        }
+
+        .tasks-section {
+            background-color: #282828;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .task {
+            background-color: #333;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+
+        .completed-tasks-section {
+            background-color: #282828;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .countdown-timer {
+            text-align: center;
+            font-family: monospace;
+            font-size: 1.5em;
+            margin: 20px 0;
+        }
+
         .sign-in-form {
             display: none;
             position: fixed;
@@ -23,16 +103,20 @@
             z-index: 1000;
             box-shadow: 0 0 10px rgba(0,0,0,0.5);
         }
+
         .sign-in-form.active {
             display: block;
         }
+
         .sign-in-form .form-group {
             margin-bottom: 10px;
         }
+
         .sign-in-form label {
             display: block;
             margin-bottom: 5px;
         }
+
         .sign-in-form input {
             width: 100%;
             padding: 8px;
@@ -41,11 +125,13 @@
             color: #e0e0e0;
             border-radius: 4px;
         }
+
         .sign-in-form .form-buttons {
             display: flex;
             gap: 10px;
             justify-content: flex-end;
         }
+
         .sign-in-form .form-button {
             padding: 8px 15px;
             cursor: pointer;
@@ -54,54 +140,55 @@
             background: #333;
             color: #e0e0e0;
         }
+
         .sign-in-form .form-button:hover {
             background: #555;
         }
-        
-        /* Ensure unique IDs and proper styling */
-        .task-form {
-            margin: 20px;
-            padding: 15px;
-            background: #2a2a2a;
-            border-radius: 6px;
-        }
-        
-        .task {
-            margin: 10px 0;
-            padding: 10px;
-            background: #333;
-            border-radius: 4px;
-        }
-        
-        /* Responsive design */
+
         @media (max-width: 600px) {
+            .container {
+                padding: 0 10px;
+            }
+            
             .task-form input, .task-form select {
                 width: 100%;
                 margin: 5px 0;
-            }
-            
-            .sign-in-form {
-                width: 90%;
-                max-width: 400px;
             }
         }
     </style>
 </head>
 <body>
-    <div id="countdownTimer"></div>
-    <div class="overlay" id="overlay"></div>
-    <div class="task-form" id="taskForm">
-        <input type="text" id="taskDescription" placeholder="Task Description" required>
-        <input type="number" id="taskPriority" placeholder="Task Priority" min="1" max="5" required>
-        <select id="taskType" required>
-            <option value="personal">Personal</option>
-            <option value="work">Work</option>
-            <option value="other">Other</option>
-        </select>
-        <button onclick="addTask()">Add Task</button>
+    <div class="container">
+        <div class="header">
+            <h1>Mirage Park Dev Hub</h1>
+            <button onclick="showSignInForm()" id="signInButton" style="margin-top: 10px;">Sign In</button>
+        </div>
+
+        <div class="countdown-timer" id="countdownTimer"></div>
+
+        <div class="task-form">
+            <input type="text" id="taskDescription" placeholder="Task Description" required>
+            <input type="number" id="taskPriority" placeholder="Task Priority" min="1" max="5" required>
+            <select id="taskType" required>
+                <option value="coding">Coding</option>
+                <option value="art">Art</option>
+                <option value="modelling">Modelling</option>
+                <option value="refining">Refining</option>
+            </select>
+            <button onclick="addTask()">Add Task</button>
+        </div>
+
+        <div class="tasks-section">
+            <h2>Tasks To Complete</h2>
+            <div id="tasks"></div>
+        </div>
+
+        <div class="completed-tasks-section">
+            <h2>Completed Tasks Log</h2>
+            <div id="completedTasks"></div>
+        </div>
     </div>
-    <div id="tasks"></div>
-    <div id="completedTasks"></div>
+
     <div class="sign-in-form" id="signInForm">
         <h3>Sign In</h3>
         <form id="signInContent">
@@ -119,7 +206,6 @@
             </div>
         </form>
     </div>
-    <button onclick="showSignInForm()" id="signInButton">Sign In</button>
 
     <script type="module">
         // Initialize Firebase
@@ -137,12 +223,10 @@
 
         // Sign-in functionality
         function showSignInForm() {
-            document.getElementById('overlay').classList.add('active');
             document.getElementById('signInForm').classList.add('active');
         }
 
         function closeSignInForm() {
-            document.getElementById('overlay').classList.remove('active');
             document.getElementById('signInForm').classList.remove('active');
         }
 
@@ -214,7 +298,7 @@
                 // Clear form
                 document.getElementById('taskDescription').value = '';
                 document.getElementById('taskPriority').value = '';
-                document.getElementById('taskType').value = 'personal';
+                document.getElementById('taskType').value = 'coding';
                 await loadTasks();
             } catch (error) {
                 console.error("Error adding task:", error);
