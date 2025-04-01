@@ -40,6 +40,30 @@
             margin: 20px 0;
         }
 
+        .category-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .category-button {
+            padding: 10px 20px;
+            background-color: #282828;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 1em;
+            width: 120px;
+            text-align: center;
+        }
+
+        .category-button:hover {
+            background-color: #333;
+        }
+
         .task-form {
             background-color: #282828;
             padding: 20px;
@@ -154,6 +178,17 @@
                 width: 100%;
                 margin: 5px 0;
             }
+
+            .category-buttons {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 10px;
+            }
+
+            .category-button {
+                width: 100%;
+                max-width: 200px;
+            }
         }
     </style>
 </head>
@@ -164,6 +199,13 @@
             <div class="countdown-timer">
                 <h3>Next Major Update In:</h3>
                 <div id="countdownTimer"></div>
+            </div>
+            <div class="category-buttons">
+                <button class="category-button" onclick="navigateToCategory('holos')">Holos</button>
+                <button class="category-button" onclick="navigateToCategory('animatronics')">Animatronics</button>
+                <button class="category-button" onclick="navigateToCategory('viruses')">Viruses</button>
+                <button class="category-button" onclick="navigateToCategory('special')">Special</button>
+                <button class="category-button" onclick="navigateToCategory('map')">Map</button>
             </div>
             <button onclick="showSignInForm()" id="signInButton" style="margin-top: 10px;">Sign In</button>
         </div>
@@ -273,6 +315,12 @@
                 alert("Error signing in. Please try again.");
             }
         });
+
+        // Category navigation handler
+        function navigateToCategory(category) {
+            const filePath = `${category}.html`;
+            window.location.href = filePath;
+        }
 
         // Task management functions
         async function addTask() {
