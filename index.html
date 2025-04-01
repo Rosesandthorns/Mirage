@@ -4,10 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mirage Park Dev Hub</title>
-  <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-firestore.js"></script>
+  <!-- Updated Firebase Scripts with type="module" -->
+  <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app.js" type="module"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-firestore.js" type="module"></script>
   <style>
-    /* Add these additional styles */
+    /* Your existing styles remain the same */
     .sign-in-form {
       display: none;
       position: fixed;
@@ -54,9 +55,10 @@
     .sign-in-form .form-button:hover {
       background: #555;
     }
+  </style>
 </head>
 <body>
-  <!-- Add the sign-in form -->
+  <!-- Your existing body content remains the same -->
   <div class="overlay" id="overlay"></div>
   <div class="task-form" id="taskForm"></div>
   <div class="sign-in-form" id="signInForm">
