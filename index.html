@@ -57,15 +57,43 @@
         .sign-in-form .form-button:hover {
             background: #555;
         }
+        
+        /* Ensure unique IDs and proper styling */
+        .task-form {
+            margin: 20px;
+            padding: 15px;
+            background: #2a2a2a;
+            border-radius: 6px;
+        }
+        
+        .task {
+            margin: 10px 0;
+            padding: 10px;
+            background: #333;
+            border-radius: 4px;
+        }
+        
+        /* Responsive design */
+        @media (max-width: 600px) {
+            .task-form input, .task-form select {
+                width: 100%;
+                margin: 5px 0;
+            }
+            
+            .sign-in-form {
+                width: 90%;
+                max-width: 400px;
+            }
+        }
     </style>
 </head>
 <body>
     <div id="countdownTimer"></div>
     <div class="overlay" id="overlay"></div>
     <div class="task-form" id="taskForm">
-        <input type="text" id="taskDescription" placeholder="Task Description">
-        <input type="number" id="taskPriority" placeholder="Task Priority">
-        <select id="taskType">
+        <input type="text" id="taskDescription" placeholder="Task Description" required>
+        <input type="number" id="taskPriority" placeholder="Task Priority" min="1" max="5" required>
+        <select id="taskType" required>
             <option value="personal">Personal</option>
             <option value="work">Work</option>
             <option value="other">Other</option>
@@ -91,7 +119,7 @@
             </div>
         </form>
     </div>
-    <button onclick="showSignInForm()">Sign In</button>
+    <button onclick="showSignInForm()" id="signInButton">Sign In</button>
 
     <script type="module">
         // Initialize Firebase
@@ -167,6 +195,7 @@
                 const taskPriority = document.getElementById('taskPriority').value;
                 const taskType = document.getElementById('taskType').value;
 
+                // Validate input
                 if (!taskDescription || !taskPriority || !taskType) {
                     alert('Please fill in all fields');
                     return;
@@ -182,7 +211,10 @@
                 });
 
                 console.log("Task added with ID:", docRef.id);
-                closeForm();
+                // Clear form
+                document.getElementById('taskDescription').value = '';
+                document.getElementById('taskPriority').value = '';
+                document.getElementById('taskType').value = 'personal';
                 await loadTasks();
             } catch (error) {
                 console.error("Error adding task:", error);
@@ -291,6 +323,9 @@
                 const targetDate = new Date("2025-12-31T00:00:00");
                 const countdownInterval = setInterval(updateCountdown, 1000);
                 updateCountdown();
+                
+                // Store interval reference to clear later
+                window.countdownInterval = countdownInterval;
             } catch (error) {
                 console.error("Error initializing:", error);
             }
@@ -303,7 +338,7 @@
             
             if (diff <= 0) {
                 document.getElementById("countdownTimer").innerText = "Update Released!";
-                clearInterval(countdownInterval);
+                clearInterval(window.countdownInterval);
                 return;
             }
             
@@ -315,6 +350,11 @@
             document.getElementById("countdownTimer").innerText = 
                 `${days}d ${hours}h ${minutes}m ${seconds}s`;
         }
+
+        // Clear countdown interval when window is closed
+        window.onunload = function() {
+            clearInterval(window.countdownInterval);
+        };
     </script>
 </body>
 </html>
