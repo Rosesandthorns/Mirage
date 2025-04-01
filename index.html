@@ -33,6 +33,13 @@
             margin: 0;
         }
 
+        .countdown-timer {
+            text-align: center;
+            font-family: monospace;
+            font-size: 1.5em;
+            margin: 20px 0;
+        }
+
         .task-form {
             background-color: #282828;
             padding: 20px;
@@ -82,13 +89,6 @@
             padding: 20px;
             border-radius: 8px;
             margin-bottom: 20px;
-        }
-
-        .countdown-timer {
-            text-align: center;
-            font-family: monospace;
-            font-size: 1.5em;
-            margin: 20px 0;
         }
 
         .sign-in-form {
@@ -161,10 +161,12 @@
     <div class="container">
         <div class="header">
             <h1>Mirage Park Dev Hub</h1>
+            <div class="countdown-timer">
+                <h3>Next Major Update In:</h3>
+                <div id="countdownTimer"></div>
+            </div>
             <button onclick="showSignInForm()" id="signInButton" style="margin-top: 10px;">Sign In</button>
         </div>
-
-        <div class="countdown-timer" id="countdownTimer"></div>
 
         <div class="task-form">
             <input type="text" id="taskDescription" placeholder="Task Description" required>
