@@ -10,6 +10,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-firestore.js" type="module"></script>
 
     <style>
+        /* CSS styles */
         body {
             margin: 0;
             padding: 20px;
@@ -257,9 +258,9 @@
         import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, getDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/9.1.3/firebase-firestore.js';
 
         const firebaseConfig = {
-            apiKey: "AIzaSyC8923ceG_Hcp5k3v0qjO_yYgKEoXB4n_A",
-            authDomain: "miragepark-1e12a.firebaseapp.com",
-            projectId: "miragepark-1e12a",
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
         };
 
         const app = initializeApp(firebaseConfig);
@@ -335,6 +336,8 @@
                     return;
                 }
 
+                console.log("Adding task:", taskDescription, taskPriority, taskType);
+
                 // Add task to Firestore
                 const taskRef = collection(db, 'Tasks');
                 const docRef = await addDoc(taskRef, {
@@ -358,12 +361,16 @@
 
         async function loadTasks() {
             try {
+                console.log("Loading tasks...");
+
                 const tasksRef = collection(db, 'Tasks');
                 const querySnapshot = await getDocs(tasksRef);
                 
                 const tasksDiv = document.getElementById('tasks');
                 if (tasksDiv) {
                     tasksDiv.innerHTML = ''; // Clear current tasks
+
+                    console.log("Tasks fetched:", querySnapshot.size);
 
                     querySnapshot.forEach(doc => {
                         const taskData = doc.data();
@@ -418,6 +425,8 @@
 
         async function loadCompletedTasks() {
             try {
+                console.log("Loading completed tasks...");
+
                 const completedRef = collection(db, 'CompletedTasks');
                 const querySnapshot = await getDocs(completedRef);
                 
