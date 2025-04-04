@@ -1,1 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mirage Park</title>
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        /* Container and Layout */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Align at the top */
+            min-height: 100vh; /* Ensures the page is at least the height of the viewport */
+            margin: 0;
+            padding: 20px; /* Add padding to ensure the page doesn't touch the edges */
+            overflow-y: auto; /* Allows scrolling if content exceeds the viewport */
+        }
+
+        .container {
+            text-align: center;
+            width: 100%;
+            max-width: 1200px; /* Ensure the content doesn't stretch too far */
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .title {
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            color: #39c0ed;
+        }
+
+        /* Login Section */
+        .login-section {
+            margin-bottom: 2rem;
+        }
+
+        .input {
+            background: #222;
+            border: none;
+            padding: 10px;
+            margin: 10px;
+            width: 200px;
+            color: #fff;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .login-btn {
+            background-color: #39c0ed;
+            padding: 10px 20px;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .login-btn:hover {
+            background-color: #25a7c7;
+        }
+
+        /* Button Styles */
+        .buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            display: none; /* Hidden initially */
+        }
+
+        .theme-btn {
+            background-color: #ff6f61;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .theme-btn:hover {
+            background-color: #e55e4d;
+        }
+
+        .theme-btn:active {
+            background-color: #c84a3c;
+        }
+
+        /* Countdown Timer Styles */
+        .countdown {
+            margin-top: 2rem;
+            font-size: 1.5rem;
+            color: #39c0ed;
+            display: none; /* Hidden initially */
+            min-height: 40px;
+        }
+
+        /* Add Task Button Styles */
+        .add-task-btn {
+            background-color: #39c0ed;
+            padding: 10px 20px;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+
+        .add-task-btn:hover {
+            background-color: #25a7c7;
+        }
+
+        /* Tasks Section Styles */
+        .tasks {
+            margin-top: 2rem;
+            max-height: 300px;
+            overflow-y: auto;
+            background-color: #1a1a1a;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid #39c0ed;
+            display: none; /* Hidden initially */
+            margin-top: 1rem;
+        }
+
+        .task {
+            background-color: #222;
+            margin-bottom: 1rem;
+            padding: 10px;
+            border-radius: 5px;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            position: relative; /* Make relative for absolute positioning of buttons */
+            text-align: left; /* Align text inside task to the left */
+        }
+
+        .task .task-title {
+            font-size: 1.2rem;
+            color: #39c0ed;
+        }
+
+        .task .task-desc {
+            font-size: 1rem;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: #1a1a1a;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #39c0ed;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 10px;
+            text-align: left;
+        }
+
+        .modal-content input,
+        .modal-content textarea,
+        .modal-content select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            background-color: #222;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+        }
+
+        .modal-content button {
+            background-color: #39c0ed;
+            padding: 10px 20px;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        /* Complete Button Styles */
+        .complete-btn {
+            position: absolute; /* Position absolutely within the task */
+            top: 10px;
+            right: 10px;
+            background-color: #4CAF50; /* Green */
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .complete-btn:hover {
+            background-color: #45a049;
+        }
