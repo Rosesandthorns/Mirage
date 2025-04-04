@@ -3,501 +3,579 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mirage Park Dev Hub</title>
-    
-    <!-- Firebase Scripts with type="module" -->
-    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app.js" type="module"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-firestore.js" type="module"></script>
-
+    <title>Mirage Park</title>
     <style>
-        /* CSS styles */
-        body {
+        /* Basic Reset */
+        * {
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Container and Layout */
+        body {
             font-family: Arial, sans-serif;
             background-color: #121212;
-            color: #ffffff;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Align at the top */
+            min-height: 100vh; /* Ensures the page is at least the height of the viewport */
+            margin: 0;
+            padding: 20px; /* Add padding to ensure the page doesn't touch the edges */
+            overflow-y: auto; /* Allows scrolling if content exceeds the viewport */
         }
 
         .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .header {
             text-align: center;
-            margin-bottom: 30px;
+            width: 100%;
+            max-width: 1200px; /* Ensure the content doesn't stretch too far */
+            padding: 20px;
+            box-sizing: border-box;
         }
 
-        .header h1 {
-            font-size: 2.5em;
-            margin: 0;
+        .title {
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            color: #39c0ed;
         }
 
-        .countdown-timer {
-            text-align: center;
-            font-family: monospace;
-            font-size: 1.5em;
-            margin: 20px 0;
+        /* Login Section */
+        .login-section {
+            margin-bottom: 2rem;
         }
 
-        .category-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin: 20px 0;
-        }
-
-        .category-button {
-            padding: 10px 20px;
-            background-color: #282828;
-            color: #ffffff;
+        .input {
+            background: #222;
             border: none;
-            border-radius: 4px;
+            padding: 10px;
+            margin: 10px;
+            width: 200px;
+            color: #fff;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .login-btn {
+            background-color: #39c0ed;
+            padding: 10px 20px;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .login-btn:hover {
+            background-color: #25a7c7;
+        }
+
+        /* Button Styles */
+        .buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            display: none; /* Hidden initially */
+        }
+
+        .theme-btn {
+            background-color: #ff6f61;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            color: #fff;
             cursor: pointer;
             transition: background-color 0.3s;
-            font-size: 1em;
-            width: 120px;
-            text-align: center;
         }
 
-        .category-button:hover {
-            background-color: #333;
+        .theme-btn:hover {
+            background-color: #e55e4d;
         }
 
-        .task-form {
-            background-color: #282828;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
+        .theme-btn:active {
+            background-color: #c84a3c;
         }
 
-        .task-form input, .task-form select {
-            width: 100%;
-            padding: 8px;
-            margin: 5px 0;
-            background-color: #333;
-            border: 1px solid #444;
-            color: #fff;
-            border-radius: 4px;
+        /* Countdown Timer Styles */
+        .countdown {
+            margin-top: 2rem;
+            font-size: 1.5rem;
+            color: #39c0ed;
+            display: none; /* Hidden initially */
+            min-height: 40px;
         }
 
-        .task-form button {
-            background-color: #333;
+        /* Add Task Button Styles */
+        .add-task-btn {
+            background-color: #39c0ed;
+            padding: 10px 20px;
             color: #fff;
             border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
+            border-radius: 5px;
+            font-size: 1rem;
             cursor: pointer;
+            margin-top: 1rem;
         }
 
-        .task-form button:hover {
-            background-color: #555;
+        .add-task-btn:hover {
+            background-color: #25a7c7;
         }
 
-        .tasks-section {
-            background-color: #282828;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
+        /* Tasks Section Styles */
+        .tasks {
+            margin-top: 2rem;
+            max-height: 300px;
+            overflow-y: auto;
+            background-color: #1a1a1a;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid #39c0ed;
+            display: none; /* Hidden initially */
+            margin-top: 1rem;
         }
 
         .task {
-            background-color: #333;
+            background-color: #222;
+            margin-bottom: 1rem;
             padding: 10px;
-            margin: 10px 0;
-            border-radius: 4px;
+            border-radius: 5px;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            position: relative; /* Make relative for absolute positioning of buttons */
         }
 
-        .completed-tasks-section {
-            background-color: #282828;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
+        .task .task-title {
+            font-size: 1.2rem;
+            color: #39c0ed;
         }
 
-        .sign-in-form {
+        .task .task-desc {
+            font-size: 1rem;
+        }
+
+        /* Modal Styles */
+        .modal {
             display: none;
             position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: #1e1e1e;
-            padding: 20px;
-            border-radius: 6px;
-            z-index: 1000;
-            box-shadow: 0 0 10px rgba(0,0,0,0.5);
-        }
-
-        .sign-in-form.active {
-            display: block;
-        }
-
-        .sign-in-form .form-group {
-            margin-bottom: 10px;
-        }
-
-        .sign-in-form label {
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        .sign-in-form input {
+            z-index: 1;
+            left: 0;
+            top: 0;
             width: 100%;
-            padding: 8px;
-            background: #333;
-            border: 1px solid #444;
-            color: #e0e0e0;
-            border-radius: 4px;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
         }
 
-        .sign-in-form .form-buttons {
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
+        .modal-content {
+            background-color: #1a1a1a;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #39c0ed;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 10px;
+            text-align: left;
         }
 
-        .sign-in-form .form-button {
-            padding: 8px 15px;
-            cursor: pointer;
+        .modal-content input,
+        .modal-content textarea,
+        .modal-content select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            background-color: #222;
             border: none;
-            border-radius: 4px;
-            background: #333;
-            color: #e0e0e0;
+            border-radius: 5px;
+            color: #fff;
         }
 
-        .sign-in-form .form-button:hover {
-            background: #555;
+        .modal-content button {
+            background-color: #39c0ed;
+            padding: 10px 20px;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
         }
 
-        @media (max-width: 600px) {
-            .container {
-                padding: 0 10px;
-            }
-            
-            .task-form input, .task-form select {
-                width: 100%;
-                margin: 5px 0;
-            }
+        /* Complete Button Styles */
+        .complete-btn {
+            position: absolute; /* Position absolutely within the task */
+            top: 10px;
+            right: 10px;
+            background-color: #4CAF50; /* Green */
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
 
-            .category-buttons {
-                flex-wrap: wrap;
-                justify-content: center;
-                gap: 10px;
-            }
+        .complete-btn:hover {
+            background-color: #45a049;
+        }
 
-            .category-button {
-                width: 100%;
-                max-width: 200px;
-            }
+        /* Confirmation Dialog Styles */
+        .confirmation-dialog {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .confirmation-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            width: 300px;
+            color: #000; /* Set the text color to black */
+        }
+
+        .confirmation-buttons {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            gap: 10px;
+        }
+
+        .confirm-btn, .cancel-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .confirm-btn {
+            background-color: #39c0ed;
+            color: #fff;
+        }
+
+        .confirm-btn:hover {
+            background-color: #25a7c7;
+        }
+
+        .cancel-btn {
+            background-color: #f44336;
+            color: #fff;
+        }
+
+        .cancel-btn:hover {
+            background-color: #d32f2f;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>Mirage Park Dev Hub</h1>
-            <div class="countdown-timer">
-                <h3>Next Major Update In:</h3>
-                <div id="countdownTimer"></div>
-            </div>
-            <div class="category-buttons">
-                <button class="category-button" onclick="navigateToCategory('holos')">Holos</button>
-                <button class="category-button" onclick="navigateToCategory('animatronics')">Animatronics</button>
-                <button class="category-button" onclick="navigateToCategory('viruses')">Viruses</button>
-                <button class="category-button" onclick="navigateToCategory('special')">Special</button>
-                <button class="category-button" onclick="navigateToCategory('map')">Map</button>
-            </div>
-            <button onclick="showSignInForm()" id="signInButton" style="margin-top: 10px;">Sign In</button>
+        <h1 class="title">Mirage Park</h1>
+        <div class="login-section" id="login-section">
+            <input type="text" id="username" class="input" placeholder="Username" />
+            <input type="password" id="password" class="input" placeholder="Password" />
+            <button class="login-btn" onclick="login()">Login</button>
+        </div>
+        <div class="buttons">
+            <button class="theme-btn" id="holos">Holos</button>
+            <button class="theme-btn" id="animatronics">Animatronics</button>
+            <button class="theme-btn" id="viruses">Viruses</button>
+            <button class="theme-btn" id="special">Special</button>
+            <button class="theme-btn" id="map">Map</button>
+        </div>
+        <div class="countdown" id="countdown">
+            Next Update In: 00d 00h 00m 00s
         </div>
 
-        <div class="task-form">
-            <input type="text" id="taskDescription" placeholder="Task Description" required>
-            <input type="number" id="taskPriority" placeholder="Task Priority" min="1" max="5" required>
-            <select id="taskType" required>
-                <option value="coding">Coding</option>
-                <option value="art">Art</option>
-                <option value="modelling">Modelling</option>
-                <option value="refining">Refining</option>
-            </select>
-            <button onclick="addTask()">Add Task</button>
+        <button class="add-task-btn" id="add-task-btn" style="display: none;" onclick="openAddTaskModal()">Add Task</button>
+
+        <div class="tasks" id="tasks">
         </div>
 
-        <div class="tasks-section">
-            <h2>Tasks To Complete</h2>
-            <div id="tasks"></div>
+        <div id="addTaskModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeAddTaskModal()" style="float: right; cursor: pointer;">&times;</span>
+                <h2>Add New Task</h2>
+                <input type="text" id="taskTitle" placeholder="Task Title" />
+                <textarea id="taskDescription" placeholder="Task Description"></textarea>
+                <select id="taskPriority">
+                    <option value="1">Priority 1</option>
+                    <option value="2">Priority 2</option>
+                    <option value="3">Priority 3</option>
+                    <option value="4">Priority 4</option>
+                    <option value="5">Priority 5</option>
+                    <option value="6">Priority 6</option>
+                    <option value="7">Priority 7</option>
+                    <option value="8">Priority 8</option>
+                    <option value="9">Priority 9</option>
+                    <option value="10">Priority 10</option>
+                </select>
+                <select id="taskType">
+                    <option value="modelling">Modelling</option>
+                    <option value="coding">Coding</option>
+                    <option value="art">Art</option>
+                    <option value="refining">Refining</option>
+                </select>
+                <button onclick="addTask()">Add Task</button>
+            </div>
         </div>
 
-        <div class="completed-tasks-section">
-            <h2>Completed Tasks Log</h2>
-            <div id="completedTasks"></div>
+        <div id="confirmationDialog" class="confirmation-dialog">
+            <div class="confirmation-content">
+                <p>Are you sure you want to complete this task?</p>
+                <div class="confirmation-buttons">
+                    <button class="confirm-btn" onclick="confirmComplete(true)">Confirm</button>
+                    <button class="cancel-btn" onclick="confirmComplete(false)">Cancel</button>
+                </div>
+            </div>
         </div>
-    </div>
-
-    <div class="sign-in-form" id="signInForm">
-        <h3>Sign In</h3>
-        <form id="signInContent">
-            <div class="form-group">
-                <label for="signInUsername">Username:</label>
-                <input type="text" id="signInUsername" required>
-            </div>
-            <div class="form-group">
-                <label for="signInPassword">Password:</label>
-                <input type="password" id="signInPassword" required>
-            </div>
-            <div class="form-buttons">
-                <button type="button" onclick="closeSignInForm()">Cancel</button>
-                <button type="submit">Sign In</button>
-            </div>
-        </form>
     </div>
 
     <script type="module">
-        // Initialize Firebase
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.1.3/firebase-app.js';
-        import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, getDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/9.1.3/firebase-firestore.js';
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js';
+        import { getFirestore, collection, getDocs, query, where, addDoc, orderBy, serverTimestamp, deleteDoc, doc } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js';
+        import { getAnalytics } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics.js';
 
+
+        // Your web app's Firebase configuration
         const firebaseConfig = {
-            apiKey: "AIzaSyC8923ceG_Hcp5k3v0qjO_yYgKEoXB4n_A",
-            authDomain: "miragepark-1e12a.firebaseapp.com",
-            projectId: "miragepark-1e12a",
+            apiKey: "AIzaSyBODDkKMrgc_eSl5nIPwXf2FzY6MY0o_iE",
+            authDomain: "guilded-cards.firebaseapp.com",
+            projectId: "guilded-cards",
+            storageBucket: "guilded-cards.firebasestorage.app",
+            messagingSenderId: "566491650991",
+            appId: "1:566491650991:web:324493f697af5dacfeed5a",
+            measurementId: "G-96KRM8BE76"
         };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+        // Initialize Firebase
+        let app;
+        let db;
+        let analytics;
 
-        // Sign-in functionality
-        function showSignInForm() {
-            document.getElementById('signInForm').classList.add('active');
+        try {
+            // Initialize Firebase
+            app = initializeApp(firebaseConfig);
+            db = getFirestore(app);  // Get Firestore instance
+            analytics = getAnalytics(app);
+        } catch (error) {
+            console.error("Firebase initialization error:", error);
+            alert("Failed to initialize Firebase. Check your configuration and reload the page.  Error: " + error.message);
+            // Don't proceed if Firebase initialization fails
+            // return; // REMOVE THIS RETURN STATEMENT
         }
 
-        function closeSignInForm() {
-            document.getElementById('signInForm').classList.remove('active');
+        let loggedInUsername = localStorage.getItem('loggedInUsername') || "";
+        let isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+        let currentTask = null;
+
+        // If user is logged in, show the appropriate sections
+        if (isLoggedIn && db) {
+            document.querySelector('.buttons').style.display = 'flex';
+            document.querySelector('.countdown').style.display = 'block';
+            document.querySelector('.tasks').style.display = 'block';
+            document.getElementById('add-task-btn').style.display = 'inline-block';
+            startCountdown();
+            loadTasks();
         }
 
-        // Make functions globally accessible
-        window.showSignInForm = showSignInForm;
-        window.closeSignInForm = closeSignInForm;
+        // Function to handle login using Firestore data
+        async function login() {
+            const enteredUsername = document.getElementById('username').value.trim();
+            const enteredPassword = document.getElementById('password').value.trim();
 
-        // Sign-in form submission handler
-        document.getElementById('signInContent').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            try {
-                const username = document.getElementById('signInUsername').value;
-                const password = document.getElementById('signInPassword').value;
-
-                if (!username || !password) {
-                    alert('Please enter both username and password');
-                    return;
-                }
-
-                // Query Firestore for user credentials
-                const userRef = doc(db, 'Accounts', username);
-                const userDoc = await getDoc(userRef);
-
-                if (!userDoc.exists()) {
-                    alert('Username not found');
-                    return;
-                }
-
-                const userData = userDoc.data();
-                if (userData.password !== password) {
-                    alert('Incorrect password');
-                    return;
-                }
-
-                // Successful sign-in
-                alert(`Welcome, ${username}!`);
-                document.getElementById('signInButton').textContent = `Signed in as ${username}`;
-                closeSignInForm();
-            } catch (error) {
-                console.error("Error signing in:", error);
-                alert("Error signing in. Please try again.");
-            }
-        });
-
-        // Category navigation handler
-        function navigateToCategory(category) {
-            const filePath = `${category}.html`;
-            window.location.href = filePath;
-        }
-
-        // Task management functions
-        async function addTask() {
-            try {
-                const taskDescription = document.getElementById('taskDescription').value;
-                const taskPriority = document.getElementById('taskPriority').value;
-                const taskType = document.getElementById('taskType').value;
-
-                // Validate input
-                if (!taskDescription || !taskPriority || !taskType) {
-                    alert('Please fill in all fields');
-                    return;
-                }
-
-                console.log("Adding task:", taskDescription, taskPriority, taskType);
-
-                // Add task to Firestore
-                const taskRef = collection(db, 'Tasks');
-                const docRef = await addDoc(taskRef, {
-                    description: taskDescription,
-                    priority: parseInt(taskPriority),
-                    type: taskType,
-                    time: serverTimestamp()
-                });
-
-                console.log("Task added with ID:", docRef.id);
-                // Clear form
-                document.getElementById('taskDescription').value = '';
-                document.getElementById('taskPriority').value = '';
-                document.getElementById('taskType').value = 'coding';
-                await loadTasks();
-            } catch (error) {
-                console.error("Error adding task:", error);
-                alert("Error adding task. Please try again.");
-            }
-        }
-
-        async function loadTasks() {
-            try {
-                console.log("Loading tasks...");
-
-                const tasksRef = collection(db, 'Tasks');
-                const querySnapshot = await getDocs(tasksRef);
-                
-                const tasksDiv = document.getElementById('tasks');
-                if (tasksDiv) {
-                    tasksDiv.innerHTML = ''; // Clear current tasks
-
-                    console.log("Tasks fetched:", querySnapshot.size);
-
-                    querySnapshot.forEach(doc => {
-                        const taskData = doc.data();
-                        const taskDiv = document.createElement("div");
-                        taskDiv.className = "task";
-                        taskDiv.dataset.taskId = doc.id;
-                        taskDiv.innerHTML = `
-                            <span>${taskData.description}</span>
-                            <span>Priority: ${taskData.priority}</span>
-                            <span>Type: ${taskData.type}</span>
-                            <span>Time: ${taskData.time?.toDate().toLocaleString() || 'No timestamp'}</span>
-                            <button onclick="completeTask(this)">Complete</button>
-                        `;
-                        tasksDiv.appendChild(taskDiv);
-                    });
-                }
-            } catch (error) {
-                console.error("Error loading tasks:", error);
-            }
-        }
-
-        async function completeTask(button) {
-            try {
-                const taskDiv = button.parentElement;
-                const taskId = taskDiv.dataset.taskId;
-                
-                // Move task to CompletedTasks collection
-                const taskRef = doc(db, 'Tasks', taskId);
-                const completedRef = collection(db, 'CompletedTasks');
-                
-                const doc = await getDoc(taskRef);
-                if (doc.exists()) {
-                    const data = doc.data();
-                    data.completedAt = serverTimestamp();
-                    
-                    await addDoc(completedRef, data);
-                    await deleteDoc(taskRef);
-                    
-                    // Remove task from DOM
-                    const tasksDiv = document.getElementById("tasks");
-                    if (tasksDiv) {
-                        tasksDiv.removeChild(taskDiv);
-                    }
-                    
-                    // Refresh completed tasks
-                    await loadCompletedTasks();
-                }
-            } catch (error) {
-                console.error("Error completing task:", error);
-            }
-        }
-
-        async function loadCompletedTasks() {
-            try {
-                console.log("Loading completed tasks...");
-
-                const completedRef = collection(db, 'CompletedTasks');
-                const querySnapshot = await getDocs(completedRef);
-                
-                const completedDiv = document.getElementById('completedTasks');
-                if (completedDiv) {
-                    completedDiv.innerHTML = ''; // Clear current completed tasks
-
-                    querySnapshot.forEach(doc => {
-                        const taskData = doc.data();
-                        const completedDivElement = document.createElement("div");
-                        completedDivElement.className = "task";
-                        completedDivElement.innerHTML = `
-                            <span>${taskData.description}</span>
-                            <span>Priority: ${taskData.priority}</span>
-                            <span>Type: ${taskData.type}</span>
-                            <span>Completed At: ${taskData.completedAt?.toDate().toLocaleString() || 'No completion time'}</span>
-                        `;
-                        completedDiv.appendChild(completedDivElement);
-                    });
-                }
-            } catch (error) {
-                console.error("Error loading completed tasks:", error);
-            }
-        }
-
-        // Initialize on page load
-        window.onload = async function() {
-            try {
-                const tasksDiv = document.getElementById('tasks');
-                const completedDiv = document.getElementById('completedTasks');
-                if (tasksDiv && completedDiv) {
-                    await loadTasks();
-                    await loadCompletedTasks();
-                }
-                
-                // Update countdown timer
-                const targetDate = new Date("2025-12-31T00:00:00");
-                const countdownInterval = setInterval(updateCountdown, 1000);
-                updateCountdown();
-                
-                // Store interval reference to clear later
-                window.countdownInterval = countdownInterval;
-            } catch (error) {
-                console.error("Error initializing:", error);
-            }
-        }
-
-        function updateCountdown() {
-            const now = new Date();
-            const targetDate = new Date("2025-12-31T00:00:00");
-            const diff = targetDate - now;
-            
-            if (diff <= 0) {
-                document.getElementById("countdownTimer").innerText = "Update Released!";
-                clearInterval(window.countdownInterval);
+            if (!enteredUsername || !enteredPassword) {
+                alert("Please enter both username and password.");
                 return;
             }
-            
-            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-            const minutes = Math.floor((diff / (1000 * 60)) % 60);
-            const seconds = Math.floor((diff / 1000) % 60);
-            
-            document.getElementById("countdownTimer").innerText = 
-                `${days}d ${hours}h ${minutes}m ${seconds}s`;
+
+            try {
+                // Create a query against the collection "Accounts"
+                const accountsRef = collection(db, "Accounts"); // Use the initialized db
+                const q = query(accountsRef, where("username", "==", enteredUsername));
+                const querySnapshot = await getDocs(q);
+
+                if (querySnapshot.empty) {
+                    alert("No account found with that username.");
+                    return;
+                }
+
+                let valid = false;
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    if (data.password === enteredPassword) {
+                        valid = true;
+                        loggedInUsername = enteredUsername;
+                        localStorage.setItem('loggedInUsername', loggedInUsername);
+                        localStorage.setItem('isLoggedIn', 'true');
+                    }
+                });
+
+                if (valid) {
+                    alert("Login successful!");
+                    document.querySelector('.buttons').style.display = 'flex';
+                    document.querySelector('.countdown').style.display = 'block';
+                    document.querySelector('.tasks').style.display = 'block';
+                    document.querySelector('#login-section').style.display = 'none';
+                    document.getElementById('add-task-btn').style.display = 'inline-block';
+                    startCountdown();
+                    loadTasks();
+                } else {
+                    alert("Invalid password.");
+                }
+            } catch (error) {
+                console.error("Error retrieving account: ", error);
+                alert("Error logging in. Please try again later.  Error: " + error.message);
+            }
+        }
+        window.login = login;
+
+        // Load tasks from Firestore
+        async function loadTasks() {
+            try {
+                // Order the tasks by priority in descending order
+                const tasksRef = collection(db, "tasks");  // Use the initialized db
+                const q = query(tasksRef, orderBy("priority", "desc"));
+                const querySnapshot = await getDocs(q);
+                const tasksContainer = document.getElementById('tasks');
+                tasksContainer.innerHTML = '';
+
+                if (querySnapshot.size > 0) {
+                    querySnapshot.forEach((doc) => {
+                        const task = doc.data();
+                        const taskElement = document.createElement('div');
+                        taskElement.classList.add('task');
+                        const formattedDate = task.createdAt
+                            ? new Date(task.createdAt.toDate()).toLocaleString()
+                            : "N/A";
+
+                        taskElement.innerHTML = `
+                            <div class="task-title">${task.title}</div>
+                            <div class="task-desc">${task.description}</div>
+                            <div class="task-priority">Priority: ${task.priority}</div>
+                            <div class="task-type">Type: ${task.type}</div>
+                            <div class="task-creator">Created by: ${task.creator}</div>
+                            <div class="task-date">Created At: ${formattedDate}</div>
+                            <button class="complete-btn" data-task-id="${doc.id}" onclick="showConfirmation(this)">Complete</button>
+                        `;
+                        tasksContainer.appendChild(taskElement);
+                    });
+                } else {
+                    tasksContainer.innerHTML = '<p>No tasks available.</p>';
+                }
+            } catch (error) {
+                console.error("Error loading tasks: ", error);
+                alert("Failed to load tasks. Please try again later.  Error: " + error.message);
+            }
+        }
+        window.loadTasks = loadTasks;
+
+        // Countdown Timer Function (Set to Jan 6, 2026, 12:00 PM)
+        function startCountdown() {
+            const countdownElem = document.getElementById('countdown');
+            const targetDate = new Date('2026-01-06T12:00:00');
+
+            function updateCountdown() {
+                const now = new Date();
+                const timeLeft = targetDate - now;
+
+                if (timeLeft <= 0) {
+                    countdownElem.textContent = "Update Available!";
+                    clearInterval(interval);
+                } else {
+                    const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+                    countdownElem.textContent = `Next Update In: ${days}d ${hours}h ${minutes}m ${seconds}s`;
+                }
+            }
+
+            const interval = setInterval(updateCountdown, 1000);
+            updateCountdown();
         }
 
-        // Clear countdown interval when window is closed
-        window.onunload = function() {
-            clearInterval(window.countdownInterval);
+        // Add Task Modal Functions
+        function openAddTaskModal() {
+            document.getElementById('addTaskModal').style.display = 'block';
         };
+        window.openAddTaskModal = openAddTaskModal;
+
+        function closeAddTaskModal() {
+            document.getElementById('addTaskModal').style.display = 'none';
+        };
+        window.closeAddTaskModal = closeAddTaskModal;
+
+        async function addTask() {
+            const title = document.getElementById('taskTitle').value;
+            const description = document.getElementById('taskDescription').value;
+            const priority = document.getElementById('taskPriority').value;
+            const type = document.getElementById('taskType').value;
+            const creator = loggedInUsername;
+
+            if (title && description && priority && type && creator && db) {
+                try {
+                    const newTaskRef = await addDoc(collection(db, "tasks"), { // Use the initialized db
+                        title: title,
+                        description: description,
+                        priority: priority,
+                        type: type,
+                        creator: creator,
+                        createdAt: serverTimestamp()
+                    });
+                    console.log("Task added with ID: ", newTaskRef.id);
+                    loadTasks();
+                    closeAddTaskModal();
+                    document.getElementById('taskTitle').value = "";
+                    document.getElementById('taskDescription').value = "";
+                    document.getElementById('taskPriority').value = "1";
+                    document.getElementById('taskType').value = "modelling";
+                } catch (error) {
+                    console.error("Error adding task: ", error);
+                    alert("Error adding task. Please try again.  Error: " + error.message);
+                }
+            } else {
+                alert("Please enter all task details.");
+            }
+        }
+        window.addTask = addTask;
+
+        // Show Confirmation Dialog
+        function showConfirmation(buttonElement) {
+            currentTask = buttonElement.dataset.taskId;
+            document.getElementById('confirmationDialog').style.display = 'flex';
+        };
+        window.showConfirmation = showConfirmation;
+
+        // Handle Confirmation
+        async function confirmComplete(confirmed) {
+            if (confirmed && db) {
+                console.log('Task completed:', currentTask);
+                try {
+                    await deleteDoc(doc(db, "tasks", currentTask)); // Use the initialized db
+                    const taskElement = document.querySelector(`[data-task-id="${currentTask}"]`).parentNode;
+                    taskElement.remove();
+                    alert("Task completed successfully!");
+                    loadTasks();
+                } catch (error) {
+                    console.error("Error completing task:", error);
+                    alert("Failed to complete task. Please try again.  Error: " + error.message);
+                }
+            } else {
+                console.log('Task completion cancelled');
+            }
+            document.getElementById('confirmationDialog').style.display = 'none';
+            currentTask = null;
+        };
+        window.confirmComplete = confirmComplete;
     </script>
 </body>
 </html>
