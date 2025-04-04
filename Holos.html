@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mirage Park</title>
+    <title>Holos</title>
     <style>
         /* Basic Reset */
         * {
@@ -12,210 +12,281 @@
             box-sizing: border-box;
         }
 
-        /* Container and Layout */
+        /* Body and Layout */
         body {
             font-family: Arial, sans-serif;
-            background-color: #121212;
-            color: #fff;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start; /* Align at the top */
-            min-height: 100vh; /* Ensures the page is at least the height of the viewport */
-            margin: 0;
-            padding: 20px; /* Add padding to ensure the page doesn't touch the edges */
-            overflow-y: auto; /* Allows scrolling if content exceeds the viewport */
+            background-color: #121212; /* Dark background */
+            color: #fff; /* Light text */
+            min-height: 100vh; /* Full viewport height */
+            padding: 20px; /* Padding around the page */
+            padding-top: 70px; /* Extra padding at the top to avoid overlap with back button */
+            position: relative; /* Needed for absolute positioning of the back button */
         }
 
+        /* Back Button Styling */
+        .back-btn {
+            position: absolute; /* Position relative to the body */
+            top: 20px;
+            left: 20px;
+            background-color: #39c0ed; /* Blue background */
+            padding: 10px 15px;
+            color: #fff; /* White text */
+            text-decoration: none; /* Remove underline */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+            z-index: 10; /* Ensure it's above other content */
+        }
+
+        .back-btn:hover {
+            background-color: #25a7c7; /* Darker blue on hover */
+        }
+
+        /* Main Content Container */
         .container {
             text-align: center;
             width: 100%;
-            max-width: 1200px; /* Ensure the content doesn't stretch too far */
+            max-width: 1200px; /* Max width for content */
+            margin: 0 auto; /* Center the container */
             padding: 20px;
             box-sizing: border-box;
         }
 
+        /* Page Title Styling */
         .title {
             font-size: 3rem;
             margin-bottom: 2rem;
-            color: #39c0ed;
+            color: #39c0ed; /* Blue title color */
         }
 
-        /* Login Section */
-        .login-section {
-            margin-bottom: 2rem;
+        /* Character Grid Layout */
+        .character-grid {
+            display: grid;
+            /* Adjust minmax for potentially taller content */
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); /* Responsive grid */
+            gap: 2rem; /* Space between grid items */
+            margin-top: 2rem;
         }
 
-        .input {
-            background: #222;
-            border: none;
-            padding: 10px;
-            margin: 10px;
-            width: 200px;
-            color: #fff;
-            border-radius: 5px;
-            font-size: 1rem;
+        /* Individual Character Slot Styling */
+        .character-slot {
+            background-color: #1a1a1a; /* Slightly lighter dark background */
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid #39c0ed; /* Blue border */
+            text-align: left; /* Align text to the left within the slot */
+            display: flex;
+            flex-direction: column; /* Stack image and details vertically */
+            gap: 1.5rem; /* Increased gap */
         }
 
-        .login-btn {
-            background-color: #39c0ed;
-            padding: 10px 20px;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
+        /* Character Image Styling */
+        .character-image {
+            width: 100%; /* Make image fill the container width */
+            max-width: 300px; /* Max image width */
+            height: auto; /* Maintain aspect ratio */
+            border-radius: 5px; /* Rounded corners for image */
+            display: block; /* Remove extra space below image */
+            margin: 0 auto 0 auto; /* Center image, remove bottom margin here */
+            background-color: #222; /* Placeholder background */
         }
 
-        .login-btn:hover {
-            background-color: #25a7c7;
-        }
-
-        /* Button Styles */
-        .buttons {
+        /* Character Details Wrapper */
+        .character-details {
             display: flex;
             flex-direction: column;
-            gap: 1rem;
-            display: none; /* Hidden initially */
+            gap: 1rem; /* Space between sections within details */
         }
 
-        .theme-btn {
-            background-color: #ff6f61;
-            padding: 15px;
-            border: none;
-            border-radius: 10px;
-            font-size: 1.2rem;
-            color: #fff;
-            cursor: pointer;
-            transition: background-color 0.3s;
+        /* Character Name */
+        .character-details h3 {
+            color: #fff; /* White color for character names */
+            margin-bottom: 0.25rem; /* Reduced margin */
+            font-size: 1.75rem; /* Slightly larger name */
+            text-align: center; /* Center name */
         }
 
-        .theme-btn:hover {
-            background-color: #e55e4d;
-        }
-
-        .theme-btn:active {
-            background-color: #c84a3c;
-        }
-
-        /* Countdown Timer Styles */
-        .countdown {
-            margin-top: 2rem;
-            font-size: 1.5rem;
-            color: #39c0ed;
-            display: none; /* Hidden initially */
-            min-height: 40px;
-        }
-
-        /* Add Task Button Styles */
-        .add-task-btn {
-            background-color: #39c0ed;
-            padding: 10px 20px;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            font-size: 1rem;
-            cursor: pointer;
-            margin-top: 1rem;
-        }
-
-        .add-task-btn:hover {
-            background-color: #25a7c7;
-        }
-
-        /* Tasks Section Styles */
-        .tasks {
-            margin-top: 2rem;
-            max-height: 300px;
-            overflow-y: auto;
-            background-color: #1a1a1a;
-            padding: 10px;
-            border-radius: 10px;
-            border: 1px solid #39c0ed;
-            display: none; /* Hidden initially */
-            margin-top: 1rem;
-        }
-
-        .task {
-            background-color: #222;
-            margin-bottom: 1rem;
-            padding: 10px;
-            border-radius: 5px;
-            color: #fff;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            position: relative; /* Make relative for absolute positioning of buttons */
-            text-align: left; /* Align text inside task to the left */
-        }
-
-        .task .task-title {
-            font-size: 1.2rem;
-            color: #39c0ed;
-        }
-
-        .task .task-desc {
-            font-size: 1rem;
-        }
-
-        /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.4);
-        }
-
-        .modal-content {
-            background-color: #1a1a1a;
-            margin: 15% auto;
-            padding: 20px;
-            border: 1px solid #39c0ed;
-            width: 80%;
-            max-width: 600px;
-            border-radius: 10px;
-            text-align: left;
-        }
-
-        .modal-content input,
-        .modal-content textarea,
-        .modal-content select {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            background-color: #222;
-            border: none;
-            border-radius: 5px;
-            color: #fff;
-        }
-
-        .modal-content button {
-            background-color: #39c0ed;
-            padding: 10px 20px;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
-        /* Complete Button Styles */
-        .complete-btn {
-            position: absolute; /* Position absolutely within the task */
-            top: 10px;
-            right: 10px;
-            background-color: #4CAF50; /* Green */
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 5px;
-            cursor: pointer;
+        /* Catchphrase Styling */
+        .catchphrase {
+            font-style: italic;
+            color: #a0a0a0; /* Grey color */
+            text-align: center; /* Center catchphrase */
+            margin-top: -0.75rem; /* Pull closer to name */
+            margin-bottom: 0.75rem;
             font-size: 0.9rem;
         }
 
-        .complete-btn:hover {
-            background-color: #45a049;
+        /* Section Headings (Ability, Passive, Stats, Description) */
+        .character-details h4 {
+            color: #39c0ed; /* Blue headings */
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            border-bottom: 1px solid #333; /* Subtle separator */
+            padding-bottom: 0.25rem;
         }
+
+        /* Description Text */
+        .description-text {
+            font-size: 0.95rem; /* Slightly smaller description text */
+            line-height: 1.6;
+            color: #ccc; /* Slightly lighter text color for description */
+        }
+
+        /* Ability/Passive Text */
+        .ability-passive-text p {
+             font-size: 0.95rem;
+             line-height: 1.5;
+             color: #ccc;
+             margin-bottom: 0.25rem; /* Space between lines */
+        }
+         .ability-passive-text p strong {
+            color: #ddd; /* Slightly brighter label */
+         }
+
+
+        /* Stats List Styling */
+        .stats-list {
+            list-style: none; /* Remove default bullets */
+            padding: 0;
+            font-size: 0.95rem;
+            color: #ccc;
+             /* Optional: Two-column layout for stats */
+            /* display: grid; */
+            /* grid-template-columns: repeat(2, 1fr); */
+            /* gap: 0 1rem; */ /* Column gap */
+        }
+
+        .stats-list li {
+            margin-bottom: 0.3rem; /* Space between stats */
+        }
+
+        .stats-list li strong {
+            color: #ddd; /* Slightly brighter label */
+            min-width: 80px; /* Align values */
+            display: inline-block; /* Allow width */
+        }
+
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-btn">&larr; Back</a>
+
+    <div class="container">
+        <h1 class="title">Holos</h1>
+
+        <div class="character-grid">
+
+            <div class="character-slot">
+                <img class="character-image" src="https://placehold.co/300x200/1a1a1a/39c0ed?text=Oakwell" alt="Oakwell" onerror="this.src='https://placehold.co/300x200/1a1a1a/cccccc?text=Image+Not+Found';">
+                <div class="character-details">
+                    <h3>Oakwell</h3>
+                    <p class="catchphrase">"Oakswell that ends well"</p>
+
+                    <h4>Description</h4>
+                    <p class="description-text">
+                        Oakswell is one of the oldest members of the Mirage Crew, and an old friend of Mirage, and a caretaker of the forest. Oakwell is a very big fan of the Zen Garden, and almost always stays there. Oakwell is a swampy creature, made of mud, and tree bark. Oakwell swears to defend the forest with his life, and anyone who messes with it, or Oakwell's friends, will feel Oakwells wrath. Oakwell is one of 5 Holos who keep a pet, with Oakwells pet being Flowo. Oakwell is the reason Flowo even exists; when Oakwell kept a special flower so safe, it gained sentience. Oakwell premiers in episode 24, "Swampy Adventures". Oakwell can be described as loyal, caring, and overprotecting, yet fierce and aggressive to anyone who harms the environment or his friends. Oakwell is closest to: Flowo, Mirage, Grekka, and Reef, and dislikes: Kole and Clover.
+                    </p>
+
+                    <h4>Ability</h4>
+                    <div class="ability-passive-text">
+                        <p><strong>Name:</strong> Thorn Trap</p>
+                        <p>Bring Brambles up out of the ground to make a trap. These traps last 120 seconds and affect any Holo or Animatronic who steps on it. Takes 5 seconds to activate after using the ability. Cooldown: 60s.</p>
+                    </div>
+
+                    <h4>Passive</h4>
+                     <div class="ability-passive-text">
+                        <p><strong>Name:</strong> Heart of Oak</p>
+                        <p>Oakwell heals one heart every 8 nights.</p>
+                    </div>
+
+                    <h4>Stats</h4>
+                    <ul class="stats-list">
+                        <li><strong>Energy:</strong> 50</li>
+                        <li><strong>Health:</strong> 2</li>
+                        <li><strong>Speed:</strong> 2m/s</li>
+                        <li><strong>Agility:</strong> 50</li>
+                        <li><strong>Sound:</strong> 80</li>
+                        <li><strong>Stealth:</strong> 0</li>
+                        <li><strong>Smarts:</strong> 10</li>
+                        <li><strong>Strength:</strong> 8</li>
+                        <li><strong>Resistance:</strong> 8</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="character-slot">
+                <img class="character-image" src="https://placehold.co/300x200/1a1a1a/39c0ed?text=Pinedo" alt="Pinedo" onerror="this.src='https://placehold.co/300x200/1a1a1a/cccccc?text=Image+Not+Found';">
+                <div class="character-details">
+                    <h3>Pinedo</h3>
+                    <h4>Description</h4>
+                    <p class="description-text">
+                        Pinedo doesn't like to be seen; often described as shy, she is rarely seen with the Mirage Crew. She's always nervous about losing her head, quite literally. Being detached from her body, she uses her third arm to hold onto it. Pinedo premiered in episode 36 - "Careful what you wish for". Pinedo doesn't like coming up on stage often, but tends to be made to on weekend shows. She is often described as shy, anxious, and nervous, and shows kids it's okay to be worried, as she gets over it in every episode she appears in. Pinedo is friends with Rubix, and Ace, but dislikes [Name null].
+                    </p>
+
+                    <h4>Ability</h4>
+                     <div class="ability-passive-text">
+                        <p><strong>Name:</strong> Detached Head</p>
+                        <p>This Holo can throw her head away from animatronics, making them lose interest in her. However, she becomes a sitting duck, waiting for her body to come get her. Cooldown: 50s.</p>
+                    </div>
+
+                    <h4>Passive</h4>
+                     <div class="ability-passive-text">
+                        <p><strong>Name:</strong> Headless Fear</p>
+                        <p>This Holo drops her head for 3 seconds when seen for the first time each night, making her unable to move for this period.</p>
+                    </div>
+
+                    <h4>Stats</h4>
+                    <ul class="stats-list">
+                        <li><strong>Energy:</strong> 100</li>
+                        <li><strong>Health:</strong> 4</li>
+                        <li><strong>Speed:</strong> 3m/s</li>
+                        <li><strong>Agility:</strong> 20</li>
+                        <li><strong>Sound:</strong> 30</li>
+                        <li><strong>Stealth:</strong> N/A (Not provided)</li>
+                        <li><strong>Smarts:</strong> 6</li>
+                        <li><strong>Strength:</strong> 2</li>
+                        <li><strong>Resistance:</strong> 5</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="character-slot">
+                 <img class="character-image" src="https://placehold.co/300x200/1a1a1a/39c0ed?text=Chester" alt="Chester" onerror="this.src='https://placehold.co/300x200/1a1a1a/cccccc?text=Image+Not+Found';">
+                 <div class="character-details">
+                    <h3>Chester</h3>
+                    <h4>Description</h4>
+                    <p class="description-text">
+                        Chester is not one to say much unless it aids him, and is quite a greedy one, always fighting over anything, be it bottlecaps or gold. Chester never shares and often upsets a lot of the other Holos. Chester is quite cranky and has been around the Mirage Crew since episode 1, but didn't get his first episode staring him until episode 33 - "The Bottlecap Thief.". Chester is easily described as rude, greedy, and ignorant, and is a good example of what not to be, as Chester never learns to share. Chester likes Pinedo as he sees her as a free source of things, and dislikes Flash and Lanberd, who keep trying to stop Chester from stealing.
+                    </p>
+
+                    <h4>Ability</h4>
+                    <div class="ability-passive-text">
+                        <p><strong>Name:</strong> Disguise</p>
+                        <p>Chester can tuck in his arms, disguising himself as a prop for 5 seconds, making all animatronics lose interest in him. Cooldown: 60s.</p>
+                    </div>
+
+                    <h4>Passive</h4>
+                     <div class="ability-passive-text">
+                        <p><strong>Name:</strong> Greedy</p>
+                        <p>Gain 2x tickets during nights.</p>
+                    </div>
+
+                    <h4>Stats</h4>
+                    <ul class="stats-list">
+                        <li><strong>Energy:</strong> 150</li>
+                        <li><strong>Health:</strong> 2</li>
+                        <li><strong>Speed:</strong> 1m/s</li>
+                        <li><strong>Agility:</strong> 60</li>
+                        <li><strong>Sound:</strong> 80</li>
+                        <li><strong>Stealth:</strong> 30</li>
+                        <li><strong>Smarts:</strong> 0</li>
+                        <li><strong>Strength:</strong> 9</li>
+                        <li><strong>Resistance:</strong> 10</li>
+                    </ul>
+                </div>
+            </div>
+
+        </div> </div> </body>
+</html>
