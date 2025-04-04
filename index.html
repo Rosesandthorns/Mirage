@@ -144,6 +144,7 @@
             flex-direction: column;
             gap: 5px;
             position: relative; /* Make relative for absolute positioning of buttons */
+            text-align: left; /* Align text inside task to the left */
         }
 
         .task .task-title {
@@ -282,7 +283,14 @@
             border-radius: 10px;
             border: 1px solid #39c0ed;
             margin-top: 1rem;
-            display: none;
+            display: none; /* Hidden initially */
+            text-align: left; /* Align text inside completed tasks to the left */
+        }
+
+        .completed-tasks h2 {
+            text-align: center; /* Center the heading */
+            margin-bottom: 1rem;
+            color: #39c0ed;
         }
 
         .completed-task {
@@ -314,11 +322,11 @@
             <button class="login-btn" onclick="login()">Login</button>
         </div>
         <div class="buttons">
-            <button class="theme-btn" id="holos">Holos</button>
-            <button class="theme-btn" id="animatronics">Animatronics</button>
-            <button class="theme-btn" id="viruses">Viruses</button>
-            <button class="theme-btn" id="special">Special</button>
-            <button class="theme-btn" id="map">Map</button>
+            <button class="theme-btn" id="holos" onclick="window.location.href='Holds.html'">Holos</button>
+            <button class="theme-btn" id="animatronics" onclick="window.location.href='Animatronics.html'">Animatronics</button>
+            <button class="theme-btn" id="viruses" onclick="window.location.href='Viruses.html'">Viruses</button>
+            <button class="theme-btn" id="special" onclick="window.location.href='Special.html'">Special</button>
+            <button class="theme-btn" id="map" onclick="window.location.href='Map.html'">Map</button>
         </div>
         <div class="countdown" id="countdown">
             Next Update In: 00d 00h 00m 00s
@@ -583,6 +591,10 @@
                 const completedTasksContainer = document.getElementById('completed-tasks');
                 // Clear only the tasks, keep the heading
                 completedTasksContainer.querySelectorAll('.completed-task').forEach(el => el.remove());
+                // Remove any "no tasks" message if present
+                const noTasksMsg = completedTasksContainer.querySelector('p');
+                if (noTasksMsg) noTasksMsg.remove();
+
 
                 if (querySnapshot.empty) {
                     completedTasksContainer.style.display = 'none'; // Hide section if no completed tasks
