@@ -274,6 +274,10 @@
             background-color: #d32f2f;
         }
     </style>
+    <!-- Firebase SDKs (compatibility versions) -->
+    <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-analytics-compat.js"></script>
 </head>
 <body>
     <div class="container">
@@ -338,54 +342,58 @@
         </div>
     </div>
 
-    <script type="module">
-        // Import the functions you need from the SDKs you need
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js';
-        import { getFirestore, collection, getDocs, query, where, addDoc, orderBy, serverTimestamp, deleteDoc, doc } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js';
-        import { getAnalytics } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics.js';
-
-
-        // Your web app's Firebase configuration
+    <script>
+        // Firebase configuration and initialization using compat libraries
         const firebaseConfig = {
-            apiKey: "AIzaSyBODDkKMrgc_eSl5nIPwXf2FzY6MY0o_iE",
-            authDomain: "guilded-cards.firebaseapp.com",
-            projectId: "guilded-cards",
-            storageBucket: "guilded-cards.firebasestorage.app",
-            messagingSenderId: "566491650991",
-            appId: "1:566491650991:web:324493f697af5dacfeed5a",
-            measurementId: "G-96KRM8BE76"
+            apiKey: "YOUR_API_KEY", // Replace with your actual API key
+            authDomain: "miragepark-1e12a.firebaseapp.com",
+            projectId: "miragepark-1e12a",
+            storageBucket: "miragepark-1e12a.appspot.com", // Fixed storage bucket
+            messagingSenderId: "11545240206",
+            appId: "1:11545240206:web:d36635f6db96aa49025fdf",
+            measurementId: "G-K2KGDZ3Q17"
         };
 
-        // Initialize Firebase
-        let app;
-        let db;
-        let analytics;
-
-        try {
-            // Initialize Firebase
-            app = initializeApp(firebaseConfig);
-            db = getFirestore(app);  // Get Firestore instance
-            analytics = getAnalytics(app);
-        } catch (error) {
-            console.error("Firebase initialization error:", error);
-            alert("Failed to initialize Firebase. Check your configuration and reload the page.  Error: " + error.message);
-            // Don't proceed if Firebase initialization fails
-            // return; // REMOVE THIS RETURN STATEMENT
+        let app, db, analyticsInstance;
+        // Initialize Firebase if it hasn't been initialized yet
+        function initializeFirebase() {
+            try {
+                if (!firebase.apps.length) {
+                    app = firebase.initializeApp(firebaseConfig);
+                    db = firebase.firestore();
+                    analyticsInstance = firebase.analytics();
+                    console.log("Firebase initialized successfully!");
+                } else {
+                    app = firebase.app();
+                    db = firebase.firestore();
+                    analyticsInstance = firebase.analytics();
+                }
+            } catch (error) {
+                console.error("Firebase initialization error:", error);
+                alert("Failed to initialize Firebase. Check your configuration and reload the page.\nError: " + error.message);
+                throw error;
+            }
         }
+
+        // Initialize Firebase immediately
+        initializeFirebase();
 
         let loggedInUsername = localStorage.getItem('loggedInUsername') || "";
         let isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-        let currentTask = null;
+        let currentTask = null; // To store the current task being completed
 
-        // If user is logged in, show the appropriate sections
-        if (isLoggedIn && db) {
-            document.querySelector('.buttons').style.display = 'flex';
-            document.querySelector('.countdown').style.display = 'block';
-            document.querySelector('.tasks').style.display = 'block';
-            document.getElementById('add-task-btn').style.display = 'inline-block';
-            startCountdown();
-            loadTasks();
+        // Check login status and load tasks if logged in
+        async function checkLoginAndLoad() {
+            if (isLoggedIn && db) {
+                document.querySelector('.buttons').style.display = 'flex';
+                document.querySelector('.countdown').style.display = 'block';
+                document.querySelector('.tasks').style.display = 'block';
+                document.getElementById('add-task-btn').style.display = 'inline-block';
+                startCountdown();
+                loadTasks();
+            }
         }
+        checkLoginAndLoad();
 
         // Function to handle login using Firestore data
         async function login() {
@@ -398,10 +406,14 @@
             }
 
             try {
-                // Create a query against the collection "Accounts"
-                const accountsRef = collection(db, "Accounts"); // Use the initialized db
-                const q = query(accountsRef, where("username", "==", enteredUsername));
-                const querySnapshot = await getDocs(q);
+                // Reinitialize Firebase if needed
+                if (!db) {
+                    initializeFirebase();
+                }
+                // Query the "Accounts" collection for the entered username
+                const accountsRef = db.collection("Accounts");
+                const q = accountsRef.where("username", "==", enteredUsername);
+                const querySnapshot = await q.get();
 
                 if (querySnapshot.empty) {
                     alert("No account found with that username.");
@@ -413,7 +425,7 @@
                     const data = doc.data();
                     if (data.password === enteredPassword) {
                         valid = true;
-                        loggedInUsername = enteredUsername;
+                        loggedInUsername = enteredUsername; // Store username upon successful login
                         localStorage.setItem('loggedInUsername', loggedInUsername);
                         localStorage.setItem('isLoggedIn', 'true');
                     }
@@ -424,7 +436,7 @@
                     document.querySelector('.buttons').style.display = 'flex';
                     document.querySelector('.countdown').style.display = 'block';
                     document.querySelector('.tasks').style.display = 'block';
-                    document.querySelector('#login-section').style.display = 'none';
+                    document.getElementById('login-section').style.display = 'none';
                     document.getElementById('add-task-btn').style.display = 'inline-block';
                     startCountdown();
                     loadTasks();
@@ -432,29 +444,40 @@
                     alert("Invalid password.");
                 }
             } catch (error) {
-                console.error("Error retrieving account: ", error);
-                alert("Error logging in. Please try again later.  Error: " + error.message);
+                console.error("Error retrieving account:", error);
+                alert("Error logging in. Please try again later.");
             }
         }
         window.login = login;
 
         // Load tasks from Firestore
         async function loadTasks() {
+            if (!db) {
+                try {
+                    initializeFirebase();
+                } catch (e) {
+                    console.error("loadTasks: Firebase not initialized");
+                    return;
+                }
+            }
             try {
-                // Order the tasks by priority in descending order
-                const tasksRef = collection(db, "tasks");  // Use the initialized db
-                const q = query(tasksRef, orderBy("priority", "desc"));
-                const querySnapshot = await getDocs(q);
+                // Order tasks by priority in descending order
+                const tasksRef = db.collection("tasks");
+                const q = tasksRef.orderBy("priority", "desc");
+                const querySnapshot = await q.get();
+
                 const tasksContainer = document.getElementById('tasks');
-                tasksContainer.innerHTML = '';
+                tasksContainer.innerHTML = ''; // Clear existing tasks
 
                 if (querySnapshot.size > 0) {
                     querySnapshot.forEach((doc) => {
                         const task = doc.data();
                         const taskElement = document.createElement('div');
                         taskElement.classList.add('task');
+
+                        // Format createdAt date, if available
                         const formattedDate = task.createdAt
-                            ? new Date(task.createdAt.toDate()).toLocaleString()
+                            ? task.createdAt.toDate().toLocaleString()
                             : "N/A";
 
                         taskElement.innerHTML = `
@@ -472,8 +495,8 @@
                     tasksContainer.innerHTML = '<p>No tasks available.</p>';
                 }
             } catch (error) {
-                console.error("Error loading tasks: ", error);
-                alert("Failed to load tasks. Please try again later.  Error: " + error.message);
+                console.error("Error loading tasks:", error);
+                alert("Failed to load tasks. Please try again later.");
             }
         }
         window.loadTasks = loadTasks;
@@ -506,32 +529,42 @@
         // Add Task Modal Functions
         function openAddTaskModal() {
             document.getElementById('addTaskModal').style.display = 'block';
-        };
+        }
         window.openAddTaskModal = openAddTaskModal;
 
         function closeAddTaskModal() {
             document.getElementById('addTaskModal').style.display = 'none';
-        };
+        }
         window.closeAddTaskModal = closeAddTaskModal;
 
+        // Function to add a new task to Firestore
         async function addTask() {
-            const title = document.getElementById('taskTitle').value;
-            const description = document.getElementById('taskDescription').value;
-            const priority = document.getElementById('taskPriority').value;
+            if (!db) {
+                try {
+                    initializeFirebase();
+                } catch (error) {
+                    console.error("addTask: Failed to initialize Firebase:", error);
+                    alert("Failed to add task: Firebase not initialized.");
+                    return;
+                }
+            }
+            const title = document.getElementById('taskTitle').value.trim();
+            const description = document.getElementById('taskDescription').value.trim();
+            const priority = parseInt(document.getElementById('taskPriority').value, 10);
             const type = document.getElementById('taskType').value;
             const creator = loggedInUsername;
 
-            if (title && description && priority && type && creator && db) {
+            if (title && description && priority && type && creator) {
                 try {
-                    const newTaskRef = await addDoc(collection(db, "tasks"), { // Use the initialized db
+                    const newTaskRef = await db.collection("tasks").add({
                         title: title,
                         description: description,
                         priority: priority,
                         type: type,
                         creator: creator,
-                        createdAt: serverTimestamp()
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp() // Server timestamp
                     });
-                    console.log("Task added with ID: ", newTaskRef.id);
+                    console.log("Task added with ID:", newTaskRef.id);
                     loadTasks();
                     closeAddTaskModal();
                     document.getElementById('taskTitle').value = "";
@@ -539,8 +572,8 @@
                     document.getElementById('taskPriority').value = "1";
                     document.getElementById('taskType').value = "modelling";
                 } catch (error) {
-                    console.error("Error adding task: ", error);
-                    alert("Error adding task. Please try again.  Error: " + error.message);
+                    console.error("Error adding task:", error);
+                    alert("Error adding task. Please try again.");
                 }
             } else {
                 alert("Please enter all task details.");
@@ -548,33 +581,34 @@
         }
         window.addTask = addTask;
 
-        // Show Confirmation Dialog
+        // Show Confirmation Dialog for task completion
         function showConfirmation(buttonElement) {
-            currentTask = buttonElement.dataset.taskId;
+            currentTask = buttonElement.dataset.taskId; // Store task ID
             document.getElementById('confirmationDialog').style.display = 'flex';
-        };
+        }
         window.showConfirmation = showConfirmation;
 
-        // Handle Confirmation
+        // Handle task completion confirmation
         async function confirmComplete(confirmed) {
-            if (confirmed && db) {
+            if (confirmed && db && currentTask) {
                 console.log('Task completed:', currentTask);
                 try {
-                    await deleteDoc(doc(db, "tasks", currentTask)); // Use the initialized db
+                    await db.collection("tasks").doc(currentTask).delete();
+                    // Remove task from UI
                     const taskElement = document.querySelector(`[data-task-id="${currentTask}"]`).parentNode;
                     taskElement.remove();
                     alert("Task completed successfully!");
                     loadTasks();
                 } catch (error) {
                     console.error("Error completing task:", error);
-                    alert("Failed to complete task. Please try again.  Error: " + error.message);
+                    alert("Failed to complete task. Please try again.");
                 }
             } else {
                 console.log('Task completion cancelled');
             }
             document.getElementById('confirmationDialog').style.display = 'none';
             currentTask = null;
-        };
+        }
         window.confirmComplete = confirmComplete;
     </script>
 </body>
