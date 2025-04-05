@@ -87,10 +87,12 @@
             width: 100%; /* Make image fill the container width */
             max-width: 300px; /* Max image width */
             height: auto; /* Maintain aspect ratio */
+            min-height: 200px; /* Ensure placeholder has height */
             border-radius: 5px; /* Rounded corners for image */
             display: block; /* Remove extra space below image */
             margin: 0 auto 0 auto; /* Center image, remove bottom margin here */
             background-color: #222; /* Placeholder background */
+            object-fit: cover; /* Cover the area nicely */
         }
 
         /* Character Details Wrapper */
@@ -143,6 +145,16 @@
         }
          .ability-passive-text p strong {
             color: #ddd; /* Slightly brighter label */
+            display: block; /* Make label block for better spacing */
+            margin-bottom: 0.1rem;
+         }
+         .ability-passive-text ul { /* For Ace's ability list */
+            list-style: disc;
+            padding-left: 20px;
+            margin-top: 0.25rem;
+         }
+         .ability-passive-text li {
+             margin-bottom: 0.15rem;
          }
 
 
@@ -191,13 +203,13 @@
 
                     <h4>Ability</h4>
                     <div class="ability-passive-text">
-                        <p><strong>Name:</strong> Thorn Trap</p>
+                        <p><strong>Name: Thorn Trap</strong></p>
                         <p>Bring Brambles up out of the ground to make a trap. These traps last 120 seconds and affect any Holo or Animatronic who steps on it. Takes 5 seconds to activate after using the ability. Cooldown: 60s.</p>
                     </div>
 
                     <h4>Passive</h4>
                      <div class="ability-passive-text">
-                        <p><strong>Name:</strong> Heart of Oak</p>
+                        <p><strong>Name: Heart of Oak</strong></p>
                         <p>Oakwell heals one heart every 8 nights.</p>
                     </div>
 
@@ -227,13 +239,13 @@
 
                     <h4>Ability</h4>
                      <div class="ability-passive-text">
-                        <p><strong>Name:</strong> Detached Head</p>
+                        <p><strong>Name: Detached Head</strong></p>
                         <p>This Holo can throw her head away from animatronics, making them lose interest in her. However, she becomes a sitting duck, waiting for her body to come get her. Cooldown: 50s.</p>
                     </div>
 
                     <h4>Passive</h4>
                      <div class="ability-passive-text">
-                        <p><strong>Name:</strong> Headless Fear</p>
+                        <p><strong>Name: Headless Fear</strong></p>
                         <p>This Holo drops her head for 3 seconds when seen for the first time each night, making her unable to move for this period.</p>
                     </div>
 
@@ -244,8 +256,7 @@
                         <li><strong>Speed:</strong> 3m/s</li>
                         <li><strong>Agility:</strong> 20</li>
                         <li><strong>Sound:</strong> 30</li>
-                        <li><strong>Stealth:</strong> N/A (Not provided)</li>
-                        <li><strong>Smarts:</strong> 6</li>
+                        <li><strong>Stealth:</strong> 60</li> <li><strong>Smarts:</strong> 6</li>
                         <li><strong>Strength:</strong> 2</li>
                         <li><strong>Resistance:</strong> 5</li>
                     </ul>
@@ -263,13 +274,13 @@
 
                     <h4>Ability</h4>
                     <div class="ability-passive-text">
-                        <p><strong>Name:</strong> Disguise</p>
+                        <p><strong>Name: Disguise</strong></p>
                         <p>Chester can tuck in his arms, disguising himself as a prop for 5 seconds, making all animatronics lose interest in him. Cooldown: 60s.</p>
                     </div>
 
                     <h4>Passive</h4>
                      <div class="ability-passive-text">
-                        <p><strong>Name:</strong> Greedy</p>
+                        <p><strong>Name: Greedy</strong></p>
                         <p>Gain 2x tickets during nights.</p>
                     </div>
 
@@ -284,6 +295,421 @@
                         <li><strong>Smarts:</strong> 0</li>
                         <li><strong>Strength:</strong> 9</li>
                         <li><strong>Resistance:</strong> 10</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="character-slot">
+                 <img class="character-image" src="https://placehold.co/300x200/1a1a1a/39c0ed?text=Morka" alt="Morka" onerror="this.src='https://placehold.co/300x200/1a1a1a/cccccc?text=Image+Not+Found';">
+                 <div class="character-details">
+                    <h3>Morka</h3>
+                    <h4>Description</h4>
+                    <p class="description-text">Description coming soon...</p>
+
+                    <h4>Ability</h4>
+                    <div class="ability-passive-text">
+                        <p><strong>Name: Launch</strong></p>
+                        <p>This holo can use his long arms to launch him forward.</p>
+                        </div>
+
+                    <h4>Passive</h4>
+                     <div class="ability-passive-text">
+                        <p><strong>Name: Panic</strong></p>
+                        <p>When all tasks are completed, this Holo’s stealth goes down by 5 and agility is increased by 5.</p>
+                    </div>
+
+                    <h4>Stats</h4>
+                    <ul class="stats-list">
+                        <li><strong>Energy:</strong> 100</li>
+                        <li><strong>Health:</strong> 2</li>
+                        <li><strong>Speed:</strong> 4m/s</li>
+                        <li><strong>Agility:</strong> 5</li>
+                        <li><strong>Sound:</strong> 70</li>
+                        <li><strong>Stealth:</strong> 15</li>
+                        <li><strong>Smarts:</strong> 3</li>
+                        <li><strong>Strength:</strong> 3</li>
+                        <li><strong>Resistance:</strong> 0</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="character-slot">
+                 <img class="character-image" src="https://placehold.co/300x200/1a1a1a/39c0ed?text=Ace" alt="Ace" onerror="this.src='https://placehold.co/300x200/1a1a1a/cccccc?text=Image+Not+Found';">
+                 <div class="character-details">
+                    <h3>Ace</h3>
+                    <h4>Description</h4>
+                    <p class="description-text">Description coming soon...</p>
+
+                    <h4>Ability</h4>
+                    <div class="ability-passive-text">
+                        <p><strong>Name: New Face</strong></p>
+                        <p>Randomly switch between 6 faces to have a specific buff:</p>
+                        <ul>
+                            <li>+10 Smarts</li>
+                            <li>+10 Strength</li>
+                            <li>+10 Resistance</li>
+                            <li>+1 Speed</li>
+                            <li>+50 Agility</li>
+                            <li>-50 Sound</li>
+                        </ul>
+                        </div>
+
+                    <h4>Passive</h4>
+                     <div class="ability-passive-text">
+                        <p><strong>Name: Patience</strong></p>
+                        <p>Ability cooldown goes down 2x faster when doing nothing and standing still.</p>
+                    </div>
+
+                    <h4>Stats</h4>
+                    <ul class="stats-list">
+                        <li><strong>Energy:</strong> 200</li>
+                        <li><strong>Health:</strong> 3</li>
+                        <li><strong>Speed:</strong> 3m/s</li>
+                        <li><strong>Agility:</strong> 20</li>
+                        <li><strong>Sound:</strong> 80</li>
+                        <li><strong>Stealth:</strong> 20</li>
+                        <li><strong>Smarts:</strong> 0</li>
+                        <li><strong>Strength:</strong> 0</li>
+                        <li><strong>Resistance:</strong> 0</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="character-slot">
+                 <img class="character-image" src="https://placehold.co/300x200/1a1a1a/39c0ed?text=Reef" alt="Reef" onerror="this.src='https://placehold.co/300x200/1a1a1a/cccccc?text=Image+Not+Found';">
+                 <div class="character-details">
+                    <h3>Reef</h3>
+                    <h4>Description</h4>
+                    <p class="description-text">Description coming soon...</p>
+
+                    <h4>Ability</h4>
+                    <div class="ability-passive-text">
+                        <p><strong>Name: Sea’s Wrath</strong></p>
+                        <p>When hit, the animatronic that hurt Reef gets shocked and out of service for 10 seconds.</p>
+                        </div>
+
+                    <h4>Passive</h4>
+                     <div class="ability-passive-text">
+                        <p><strong>Name: Waterproof Gift</strong></p>
+                        <p>This Holo cannot be hurt by water and receives a benefit from it. Reef gains +1 speed and +4 strength and smarts when touching water within the last minute.</p>
+                    </div>
+
+                    <h4>Stats</h4>
+                    <ul class="stats-list">
+                        <li><strong>Energy:</strong> 100</li>
+                        <li><strong>Health:</strong> 4</li>
+                        <li><strong>Speed:</strong> 2m/s</li>
+                        <li><strong>Agility:</strong> 50</li>
+                        <li><strong>Sound:</strong> 10</li>
+                        <li><strong>Stealth:</strong> 40</li>
+                        <li><strong>Smarts:</strong> 2</li>
+                        <li><strong>Strength:</strong> 4</li>
+                        <li><strong>Resistance:</strong> 0</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="character-slot">
+                 <img class="character-image" src="https://placehold.co/300x200/1a1a1a/39c0ed?text=Clover" alt="Clover" onerror="this.src='https://placehold.co/300x200/1a1a1a/cccccc?text=Image+Not+Found';">
+                 <div class="character-details">
+                    <h3>Clover</h3>
+                    <h4>Description</h4>
+                    <p class="description-text">Description coming soon...</p>
+
+                    <h4>Ability</h4>
+                    <div class="ability-passive-text">
+                        <p><strong>Name: Burrow</strong></p>
+                        <p>Dig into the ground and move at 2 m/s for 10 seconds. During this time, you cannot be seen and are invincible. Cooldown: 5s.</p>
+                    </div>
+
+                    <h4>Passive</h4>
+                     <div class="ability-passive-text">
+                        <p><strong>Name: Lucky Leaf</strong></p>
+                        <p>When doing a task, have a 25% chance to instantly complete that task every 5 seconds, max of 3 times an area.</p>
+                    </div>
+
+                    <h4>Stats</h4>
+                    <ul class="stats-list">
+                        <li><strong>Energy:</strong> 0</li>
+                        <li><strong>Health:</strong> 2</li>
+                        <li><strong>Speed:</strong> 0m/s</li>
+                        <li><strong>Agility:</strong> 0</li>
+                        <li><strong>Sound:</strong> 5</li>
+                        <li><strong>Stealth:</strong> 75</li>
+                        <li><strong>Smarts:</strong> 0</li>
+                        <li><strong>Strength:</strong> 0</li>
+                        <li><strong>Resistance:</strong> 0</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="character-slot">
+                 <img class="character-image" src="https://placehold.co/300x200/1a1a1a/39c0ed?text=Flash" alt="Flash" onerror="this.src='https://placehold.co/300x200/1a1a1a/cccccc?text=Image+Not+Found';">
+                 <div class="character-details">
+                    <h3>Flash</h3>
+                    <h4>Description</h4>
+                    <p class="description-text">Description coming soon...</p>
+
+                    <h4>Ability</h4>
+                    <div class="ability-passive-text">
+                        <p><strong>Name: Blacklight Mode</strong></p>
+                        <p>When used, for a minute, Resistance is increased by 3, Smarts by 5, Strength by 5, and speed by 1. This ability can only be used once per area.</p>
+                        </div>
+
+                    <h4>Passive</h4>
+                     <div class="ability-passive-text">
+                        <p><strong>Name: Watcher</strong></p>
+                        <p>When doing a task, sees every nearby animatronic, even through walls.</p>
+                    </div>
+
+                    <h4>Stats</h4>
+                    <ul class="stats-list">
+                        <li><strong>Energy:</strong> 150</li>
+                        <li><strong>Health:</strong> 3</li>
+                        <li><strong>Speed:</strong> 3m/s</li>
+                        <li><strong>Agility:</strong> 50</li>
+                        <li><strong>Sound:</strong> 80</li>
+                        <li><strong>Stealth:</strong> 0</li>
+                        <li><strong>Smarts:</strong> 5</li>
+                        <li><strong>Strength:</strong> 5</li>
+                        <li><strong>Resistance:</strong> 0</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="character-slot">
+                 <img class="character-image" src="https://placehold.co/300x200/1a1a1a/39c0ed?text=Phantasma+(TV)" alt="Phantasma (TV Form)" onerror="this.src='https://placehold.co/300x200/1a1a1a/cccccc?text=Image+Not+Found';">
+                 <div class="character-details">
+                    <h3>Phantasma (TV Form)</h3>
+                    <h4>Description</h4>
+                    <p class="description-text">Description coming soon...</p>
+
+                    <h4>Ability</h4>
+                    <div class="ability-passive-text">
+                        <p><strong>Name: Form Change</strong></p>
+                        <p>Switches to ghost form.</p>
+                        </div>
+
+                    <h4>Passive</h4>
+                     <div class="ability-passive-text">
+                        <p><strong>Name: Electronic Disturbance</strong></p>
+                        <p>Slows down any animatronics within 2 meters of you by 25%.</p>
+                    </div>
+
+                    <h4>Stats</h4>
+                    <ul class="stats-list">
+                        <li><strong>Energy:</strong> 100</li>
+                        <li><strong>Health:</strong> 3</li>
+                        <li><strong>Speed:</strong> 2m/s</li>
+                        <li><strong>Agility:</strong> 20</li>
+                        <li><strong>Sound:</strong> 70</li>
+                        <li><strong>Stealth:</strong> 0</li>
+                        <li><strong>Smarts:</strong> 7</li>
+                        <li><strong>Strength:</strong> 7</li>
+                        <li><strong>Resistance:</strong> 7</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="character-slot">
+                 <img class="character-image" src="https://placehold.co/300x200/1a1a1a/39c0ed?text=Phantasma+(Ghost)" alt="Phantasma (Ghost Form)" onerror="this.src='https://placehold.co/300x200/1a1a1a/cccccc?text=Image+Not+Found';">
+                 <div class="character-details">
+                    <h3>Phantasma (Ghost Form)</h3>
+                    <h4>Description</h4>
+                    <p class="description-text">Description coming soon...</p>
+
+                    <h4>Ability</h4>
+                    <div class="ability-passive-text">
+                        <p><strong>Name: Form Change</strong></p>
+                        <p>Switches to TV form, if within 3 meters of a TV.</p>
+                        </div>
+
+                    <h4>Passive</h4>
+                     <div class="ability-passive-text">
+                        <p><strong>Name: Bodiless</strong></p>
+                        <p>Allows you to go through some objects, however, only 3 times per round.</p>
+                    </div>
+
+                    <h4>Stats</h4>
+                    <ul class="stats-list">
+                        <li><strong>Energy:</strong> 150</li>
+                        <li><strong>Health:</strong> 3</li>
+                        <li><strong>Speed:</strong> 4m/s</li>
+                        <li><strong>Agility:</strong> 50</li>
+                        <li><strong>Sound:</strong> 0</li>
+                        <li><strong>Stealth:</strong> 60</li>
+                        <li><strong>Smarts:</strong> 1</li>
+                        <li><strong>Strength:</strong> N/A</li>
+                        <li><strong>Resistance:</strong> N/A</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="character-slot">
+                 <img class="character-image" src="https://placehold.co/300x200/1a1a1a/39c0ed?text=Lanberd" alt="Lanberd" onerror="this.src='https://placehold.co/300x200/1a1a1a/cccccc?text=Image+Not+Found';">
+                 <div class="character-details">
+                    <h3>Lanberd</h3>
+                    <h4>Description</h4>
+                    <p class="description-text">Description coming soon...</p>
+
+                    <h4>Ability</h4>
+                    <div class="ability-passive-text">
+                        <p><strong>Name: Embers</strong></p>
+                        <p>Leave a pile of embers on the ground, lighting up the area for a minute.</p>
+                        </div>
+
+                    <h4>Passive</h4>
+                     <div class="ability-passive-text">
+                        <p><strong>Name: Well-lit</strong></p>
+                        <p>In a 3 meter radius around you, makes all nearby holo’s run 20% faster and complete tasks 50% faster.</p>
+                    </div>
+
+                    <h4>Stats</h4>
+                    <ul class="stats-list">
+                        <li><strong>Energy:</strong> 200</li>
+                        <li><strong>Health:</strong> 2</li>
+                        <li><strong>Speed:</strong> 2m/s</li>
+                        <li><strong>Agility:</strong> 50</li>
+                        <li><strong>Sound:</strong> 20</li>
+                        <li><strong>Stealth:</strong> 0</li>
+                        <li><strong>Smarts:</strong> 2</li>
+                        <li><strong>Strength:</strong> 2</li>
+                        <li><strong>Resistance:</strong> 4</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="character-slot">
+                 <img class="character-image" src="https://placehold.co/300x200/1a1a1a/39c0ed?text=Fruzo" alt="Fruzo" onerror="this.src='https://placehold.co/300x200/1a1a1a/cccccc?text=Image+Not+Found';">
+                 <div class="character-details">
+                    <h3>Fruzo</h3>
+                    <h4>Description</h4>
+                    <p class="description-text">Description coming soon...</p>
+
+                    <h4>Ability</h4>
+                    <div class="ability-passive-text">
+                        <p><strong>Name: Berry Sharing</strong></p>
+                        <p>Send a berry to another Holo, losing the berry, but healing them one heart.</p>
+                        </div>
+
+                    <h4>Passive</h4>
+                     <div class="ability-passive-text">
+                        <p><strong>Name: Fertilizer</strong></p>
+                        <p>When healing, instead of it going to health, gain that many berries instead.</p>
+                    </div>
+
+                    <h4>Stats</h4>
+                    <ul class="stats-list">
+                        <li><strong>Energy:</strong> 200</li>
+                        <li><strong>Health:</strong> 1</li>
+                        <li><strong>Speed:</strong> 3m/s</li>
+                        <li><strong>Agility:</strong> 33.33</li> <li><strong>Sound:</strong> 0</li>
+                        <li><strong>Stealth:</strong> 60</li>
+                        <li><strong>Smarts:</strong> 2</li>
+                        <li><strong>Strength:</strong> 1</li>
+                        <li><strong>Resistance:</strong> 0</li>
+                    </ul>
+                </div>
+            </div>
+
+             <div class="character-slot">
+                 <img class="character-image" src="https://placehold.co/300x200/1a1a1a/39c0ed?text=Claws" alt="Claws" onerror="this.src='https://placehold.co/300x200/1a1a1a/cccccc?text=Image+Not+Found';">
+                 <div class="character-details">
+                    <h3>Claws</h3>
+                    <h4>Description</h4>
+                    <p class="description-text">Description coming soon...</p>
+
+                    <h4>Ability</h4>
+                    <div class="ability-passive-text">
+                        <p><strong>Name: Claw Draw</strong></p>
+                        <p>Get a random item, cannot get basic or very rare items.</p>
+                        </div>
+
+                    <h4>Passive</h4>
+                     <div class="ability-passive-text">
+                        <p><strong>Name: Pure Rush</strong></p>
+                        <p>Items effects last 75% as long, but have 2x the effect.</p>
+                    </div>
+
+                    <h4>Stats</h4>
+                    <ul class="stats-list">
+                        <li><strong>Energy:</strong> 50</li>
+                        <li><strong>Health:</strong> 3</li>
+                        <li><strong>Speed:</strong> 2m/s</li>
+                        <li><strong>Agility:</strong> 100</li>
+                        <li><strong>Sound:</strong> 60</li>
+                        <li><strong>Stealth:</strong> 20</li>
+                        <li><strong>Smarts:</strong> 0</li>
+                        <li><strong>Strength:</strong> 0</li>
+                        <li><strong>Resistance:</strong> 0</li>
+                    </ul>
+                </div>
+            </div>
+
+             <div class="character-slot">
+                 <img class="character-image" src="https://placehold.co/300x200/1a1a1a/39c0ed?text=Yarnos" alt="Yarnos" onerror="this.src='https://placehold.co/300x200/1a1a1a/cccccc?text=Image+Not+Found';">
+                 <div class="character-details">
+                    <h3>Yarnos</h3>
+                    <h4>Description</h4>
+                    <p class="description-text">Description coming soon...</p>
+
+                    <h4>Ability</h4>
+                    <div class="ability-passive-text">
+                        <p><strong>Name: Windup</strong></p>
+                        <p>Pull on your tail to bring you back a bit towards the way you came.</p>
+                        </div>
+
+                    <h4>Passive</h4>
+                     <div class="ability-passive-text">
+                        <p><strong>Name: Unraveled</strong></p>
+                        <p>This Holo is constantly being unraveled as they walk further away from where they came from, slowing them down greatly, reducing agility, and extremely lowering strength and resistance the further away from the spawn they are.</p>
+                    </div>
+
+                    <h4>Stats</h4>
+                    <ul class="stats-list">
+                        <li><strong>Energy:</strong> 125</li>
+                        <li><strong>Health:</strong> 3</li>
+                        <li><strong>Speed:</strong> 5m/s</li>
+                        <li><strong>Agility:</strong> 100</li>
+                        <li><strong>Sound:</strong> 0</li>
+                        <li><strong>Stealth:</strong> 60</li>
+                        <li><strong>Smarts:</strong> 6</li>
+                        <li><strong>Strength:</strong> 10</li>
+                        <li><strong>Resistance:</strong> 10</li>
+                    </ul>
+                </div>
+            </div>
+
+             <div class="character-slot">
+                 <img class="character-image" src="https://placehold.co/300x200/1a1a1a/39c0ed?text=Zobo" alt="Zobo" onerror="this.src='https://placehold.co/300x200/1a1a1a/cccccc?text=Image+Not+Found';">
+                 <div class="character-details">
+                    <h3>Zobo</h3>
+                    <h4>Description</h4>
+                    <p class="description-text">Description coming soon...</p>
+
+                    <h4>Ability</h4>
+                    <div class="ability-passive-text">
+                        <p><strong>Name: Regather</strong></p>
+                        <p>This ability is only usable once every 80 tasks completed. This heals you one heart at the cost of 200 tickets.</p>
+                        </div>
+
+                    <h4>Passive</h4>
+                     <div class="ability-passive-text">
+                        <p><strong>Name: Unstable</strong></p>
+                        <p>This holo will topple over and lose a heart if they don’t do tasks for a while. Ontop of that, they lose shape and skills when hit, losing 2 in each task stat, 25 in energy, 25 in agility, and 1 in speed. This holo also cannot heal with items or other holos abilities.</p>
+                    </div>
+
+                    <h4>Stats</h4>
+                    <ul class="stats-list">
+                        <li><strong>Energy:</strong> 150</li>
+                        <li><strong>Health:</strong> 4</li>
+                        <li><strong>Speed:</strong> 4m/s</li>
+                        <li><strong>Agility:</strong> 40</li>
+                        <li><strong>Sound:</strong> 5</li>
+                        <li><strong>Stealth:</strong> 20</li>
+                        <li><strong>Smarts:</strong> 8</li>
+                        <li><strong>Strength:</strong> 8</li>
+                        <li><strong>Resistance:</strong> 8</li>
                     </ul>
                 </div>
             </div>
