@@ -3,55 +3,107 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Holos</title>
+    <title>Mirage Park - Holos Login</title>
+    <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-analytics-compat.js"></script>
     <style>
-        /* Basic Reset */
+        /* --- Basic Reset & General Styles --- */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        /* Body and Layout */
         body {
             font-family: Arial, sans-serif;
             background-color: #121212; /* Dark background */
             color: #fff; /* Light text */
             min-height: 100vh; /* Full viewport height */
             padding: 20px; /* Padding around the page */
-            padding-top: 70px; /* Extra padding at the top to avoid overlap with back button */
-            position: relative; /* Needed for absolute positioning of the back button */
+            display: flex; /* Use flexbox for centering login */
+            justify-content: center; /* Center horizontally */
+            align-items: center; /* Center vertically */
+            position: relative; /* Needed for absolute positioning */
         }
 
-        /* Back Button Styling */
-        .back-btn {
-            position: absolute; /* Position relative to the body */
-            top: 20px;
-            left: 20px;
+        /* --- Login Section Styles --- */
+        .login-section {
+            text-align: center;
+            padding: 30px;
+            background-color: #1a1a1a;
+            border-radius: 10px;
+            border: 1px solid #39c0ed;
+            /* display: block; /* Visible by default */ */
+        }
+
+        .login-title {
+             font-size: 2rem;
+             margin-bottom: 1.5rem;
+             color: #39c0ed;
+        }
+
+        .input {
+            background: #222;
+            border: 1px solid #333;
+            padding: 12px;
+            margin: 10px 5px; /* Reduced horizontal margin */
+            width: calc(50% - 12px); /* Adjust width for two inputs side-by-side */
+            min-width: 150px; /* Minimum width */
+            color: #fff;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .login-btn {
             background-color: #39c0ed; /* Blue background */
-            padding: 10px 15px;
+            padding: 12px 25px;
             color: #fff; /* White text */
-            text-decoration: none; /* Remove underline */
             border: none;
             border-radius: 5px;
             cursor: pointer;
             font-size: 1rem;
             transition: background-color 0.3s;
-            z-index: 10; /* Ensure it's above other content */
+            margin-top: 15px; /* Space above button */
+            width: calc(100% - 10px); /* Make button wider */
         }
 
-        .back-btn:hover {
+        .login-btn:hover {
             background-color: #25a7c7; /* Darker blue on hover */
         }
 
-        /* Main Content Container */
-        .container {
-            text-align: center;
+        /* --- Holos Content Styles (Initially Hidden) --- */
+        .holos-content-wrapper {
+            display: none; /* Hidden by default, shown after login */
             width: 100%;
             max-width: 1200px; /* Max width for content */
             margin: 0 auto; /* Center the container */
             padding: 20px;
+            padding-top: 70px; /* Extra padding at the top to avoid overlap with back button */
             box-sizing: border-box;
+            text-align: center; /* Ensure title is centered */
+        }
+
+        /* Back Button Styling */
+        /* Consider changing this to a Logout button */
+        .back-btn {
+            position: absolute; /* Position relative to the body/wrapper */
+            top: 20px;
+            left: 20px;
+            background-color: #ff6f61; /* Changed color for distinction */
+            padding: 10px 15px;
+            color: #fff;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+            z-index: 10;
+        }
+
+        .back-btn:hover {
+            background-color: #e55e4d;
         }
 
         /* Page Title Styling */
@@ -64,7 +116,6 @@
         /* Character Grid Layout */
         .character-grid {
             display: grid;
-            /* Adjust minmax for potentially taller content */
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); /* Responsive grid */
             gap: 2rem; /* Space between grid items */
             margin-top: 2rem;
@@ -72,68 +123,68 @@
 
         /* Individual Character Slot Styling */
         .character-slot {
-            background-color: #1a1a1a; /* Slightly lighter dark background */
+            background-color: #1a1a1a;
             padding: 1.5rem;
             border-radius: 10px;
-            border: 1px solid #39c0ed; /* Blue border */
-            text-align: left; /* Align text to the left within the slot */
+            border: 1px solid #39c0ed;
+            text-align: left;
             display: flex;
-            flex-direction: column; /* Stack image and details vertically */
-            gap: 1.5rem; /* Increased gap */
+            flex-direction: column;
+            gap: 1.5rem;
         }
 
         /* Character Image Styling */
         .character-image {
-            width: 100%; /* Make image fill the container width */
-            max-width: 300px; /* Max image width */
-            height: auto; /* Maintain aspect ratio */
-            min-height: 200px; /* Ensure placeholder has height */
-            border-radius: 5px; /* Rounded corners for image */
-            display: block; /* Remove extra space below image */
-            margin: 0 auto 0 auto; /* Center image, remove bottom margin here */
-            background-color: #222; /* Placeholder background */
-            object-fit: cover; /* Cover the area nicely */
+            width: 100%;
+            max-width: 300px;
+            height: auto;
+            min-height: 200px;
+            border-radius: 5px;
+            display: block;
+            margin: 0 auto; /* Center image */
+            background-color: #222;
+            object-fit: cover;
         }
 
         /* Character Details Wrapper */
         .character-details {
             display: flex;
             flex-direction: column;
-            gap: 1rem; /* Space between sections within details */
+            gap: 1rem;
         }
 
         /* Character Name */
         .character-details h3 {
-            color: #fff; /* White color for character names */
-            margin-bottom: 0.25rem; /* Reduced margin */
-            font-size: 1.75rem; /* Slightly larger name */
-            text-align: center; /* Center name */
+            color: #fff;
+            margin-bottom: 0.25rem;
+            font-size: 1.75rem;
+            text-align: center;
         }
 
         /* Catchphrase Styling */
         .catchphrase {
             font-style: italic;
-            color: #a0a0a0; /* Grey color */
-            text-align: center; /* Center catchphrase */
-            margin-top: -0.75rem; /* Pull closer to name */
+            color: #a0a0a0;
+            text-align: center;
+            margin-top: -0.75rem;
             margin-bottom: 0.75rem;
             font-size: 0.9rem;
         }
 
-        /* Section Headings (Ability, Passive, Stats, Description) */
+        /* Section Headings */
         .character-details h4 {
-            color: #39c0ed; /* Blue headings */
+            color: #39c0ed;
             font-size: 1.2rem;
             margin-bottom: 0.5rem;
-            border-bottom: 1px solid #333; /* Subtle separator */
+            border-bottom: 1px solid #333;
             padding-bottom: 0.25rem;
         }
 
         /* Description Text */
         .description-text {
-            font-size: 0.95rem; /* Slightly smaller description text */
+            font-size: 0.95rem;
             line-height: 1.6;
-            color: #ccc; /* Slightly lighter text color for description */
+            color: #ccc;
         }
 
         /* Ability/Passive Text */
@@ -141,14 +192,14 @@
              font-size: 0.95rem;
              line-height: 1.5;
              color: #ccc;
-             margin-bottom: 0.25rem; /* Space between lines */
+             margin-bottom: 0.25rem;
         }
          .ability-passive-text p strong {
-            color: #ddd; /* Slightly brighter label */
-            display: block; /* Make label block for better spacing */
+            color: #ddd;
+            display: block;
             margin-bottom: 0.1rem;
          }
-         .ability-passive-text ul { /* For Ace's ability list */
+         .ability-passive-text ul {
             list-style: disc;
             padding-left: 20px;
             margin-top: 0.25rem;
@@ -157,562 +208,401 @@
              margin-bottom: 0.15rem;
          }
 
-
         /* Stats List Styling */
         .stats-list {
-            list-style: none; /* Remove default bullets */
+            list-style: none;
             padding: 0;
             font-size: 0.95rem;
             color: #ccc;
-             /* Optional: Two-column layout for stats */
-            /* display: grid; */
-            /* grid-template-columns: repeat(2, 1fr); */
-            /* gap: 0 1rem; */ /* Column gap */
         }
-
         .stats-list li {
-            margin-bottom: 0.3rem; /* Space between stats */
+            margin-bottom: 0.3rem;
         }
-
         .stats-list li strong {
-            color: #ddd; /* Slightly brighter label */
-            min-width: 80px; /* Align values */
-            display: inline-block; /* Allow width */
+            color: #ddd;
+            min-width: 80px;
+            display: inline-block;
         }
 
     </style>
 </head>
 <body>
-    <a href="index.html" class="back-btn">&larr; Back</a>
 
-    <div class="container">
+    <div class="login-section" id="login-section">
+        <h2 class="login-title">Mirage Park Access</h2>
+        <input type="text" id="username" class="input" placeholder="Username" />
+        <input type="password" id="password" class="input" placeholder="Password" />
+        <button class="login-btn" onclick="login()">Login</button>
+    </div>
+
+    <div class="holos-content-wrapper" id="holos-content">
+        <a href="index.html" class="back-btn" id="back-or-logout-btn">&larr; Back</a>
         <h1 class="title">Holos</h1>
-
         <div class="character-grid">
-
             <div class="character-slot">
                 <img class="character-image" src="https://placehold.co/300x200/1a1a1a/39c0ed?text=Oakwell" alt="Oakwell" onerror="this.src='https://placehold.co/300x200/1a1a1a/cccccc?text=Image+Not+Found';">
                 <div class="character-details">
                     <h3>Oakwell</h3>
                     <p class="catchphrase">"Oakswell that ends well"</p>
-
                     <h4>Description</h4>
-                    <p class="description-text">
-                        Oakswell is one of the oldest members of the Mirage Crew, and an old friend of Mirage, and a caretaker of the forest. Oakwell is a very big fan of the Zen Garden, and almost always stays there. Oakwell is a swampy creature, made of mud, and tree bark. Oakwell swears to defend the forest with his life, and anyone who messes with it, or Oakwell's friends, will feel Oakwells wrath. Oakwell is one of 5 Holos who keep a pet, with Oakwells pet being Flowo. Oakwell is the reason Flowo even exists; when Oakwell kept a special flower so safe, it gained sentience. Oakwell premiers in episode 24, "Swampy Adventures". Oakwell can be described as loyal, caring, and overprotecting, yet fierce and aggressive to anyone who harms the environment or his friends. Oakwell is closest to: Flowo, Mirage, Grekka, and Reef, and dislikes: Kole and Clover.
-                    </p>
-
+                    <p class="description-text">Oakswell is one of the oldest members of the Mirage Crew, and an old friend of Mirage, and a caretaker of the forest...</p>
                     <h4>Ability</h4>
-                    <div class="ability-passive-text">
-                        <p><strong>Name: Thorn Trap</strong></p>
-                        <p>Bring Brambles up out of the ground to make a trap. These traps last 120 seconds and affect any Holo or Animatronic who steps on it. Takes 5 seconds to activate after using the ability. Cooldown: 60s.</p>
-                    </div>
-
+                    <div class="ability-passive-text"><p><strong>Name: Thorn Trap</strong></p><p>Bring Brambles up out of the ground...</p></div>
                     <h4>Passive</h4>
-                     <div class="ability-passive-text">
-                        <p><strong>Name: Heart of Oak</strong></p>
-                        <p>Oakwell heals one heart every 8 nights.</p>
-                    </div>
-
+                    <div class="ability-passive-text"><p><strong>Name: Heart of Oak</strong></p><p>Oakwell heals one heart every 8 nights.</p></div>
                     <h4>Stats</h4>
-                    <ul class="stats-list">
-                        <li><strong>Energy:</strong> 50</li>
-                        <li><strong>Health:</strong> 2</li>
-                        <li><strong>Speed:</strong> 2m/s</li>
-                        <li><strong>Agility:</strong> 50</li>
-                        <li><strong>Sound:</strong> 80</li>
-                        <li><strong>Stealth:</strong> 0</li>
-                        <li><strong>Smarts:</strong> 10</li>
-                        <li><strong>Strength:</strong> 8</li>
-                        <li><strong>Resistance:</strong> 8</li>
-                    </ul>
+                    <ul class="stats-list"><li><strong>Energy:</strong> 50</li><li><strong>Health:</strong> 2</li><li><strong>Speed:</strong> 2m/s</li><li><strong>Agility:</strong> 50</li><li><strong>Sound:</strong> 80</li><li><strong>Stealth:</strong> 0</li><li><strong>Smarts:</strong> 10</li><li><strong>Strength:</strong> 8</li><li><strong>Resistance:</strong> 8</li></ul>
                 </div>
             </div>
-
             <div class="character-slot">
                 <img class="character-image" src="https://placehold.co/300x200/1a1a1a/39c0ed?text=Pinedo" alt="Pinedo" onerror="this.src='https://placehold.co/300x200/1a1a1a/cccccc?text=Image+Not+Found';">
                 <div class="character-details">
                     <h3>Pinedo</h3>
-                    <h4>Description</h4>
-                    <p class="description-text">
-                        Pinedo doesn't like to be seen; often described as shy, she is rarely seen with the Mirage Crew. She's always nervous about losing her head, quite literally. Being detached from her body, she uses her third arm to hold onto it. Pinedo premiered in episode 36 - "Careful what you wish for". Pinedo doesn't like coming up on stage often, but tends to be made to on weekend shows. She is often described as shy, anxious, and nervous, and shows kids it's okay to be worried, as she gets over it in every episode she appears in. Pinedo is friends with Rubix, and Ace, but dislikes [Name null].
-                    </p>
-
-                    <h4>Ability</h4>
-                     <div class="ability-passive-text">
-                        <p><strong>Name: Detached Head</strong></p>
-                        <p>This Holo can throw her head away from animatronics, making them lose interest in her. However, she becomes a sitting duck, waiting for her body to come get her. Cooldown: 50s.</p>
-                    </div>
-
-                    <h4>Passive</h4>
-                     <div class="ability-passive-text">
-                        <p><strong>Name: Headless Fear</strong></p>
-                        <p>This Holo drops her head for 3 seconds when seen for the first time each night, making her unable to move for this period.</p>
-                    </div>
-
-                    <h4>Stats</h4>
-                    <ul class="stats-list">
-                        <li><strong>Energy:</strong> 100</li>
-                        <li><strong>Health:</strong> 4</li>
-                        <li><strong>Speed:</strong> 3m/s</li>
-                        <li><strong>Agility:</strong> 20</li>
-                        <li><strong>Sound:</strong> 30</li>
-                        <li><strong>Stealth:</strong> 60</li> <li><strong>Smarts:</strong> 6</li>
-                        <li><strong>Strength:</strong> 2</li>
-                        <li><strong>Resistance:</strong> 5</li>
-                    </ul>
+                    <h4>Description</h4><p class="description-text">Pinedo doesn't like to be seen...</p>
+                    <h4>Ability</h4><div class="ability-passive-text"><p><strong>Name: Detached Head</strong></p><p>This Holo can throw her head away...</p></div>
+                    <h4>Passive</h4><div class="ability-passive-text"><p><strong>Name: Headless Fear</strong></p><p>This Holo drops her head for 3 seconds...</p></div>
+                    <h4>Stats</h4><ul class="stats-list"><li><strong>Energy:</strong> 100</li><li><strong>Health:</strong> 4</li><li><strong>Speed:</strong> 3m/s</li><li><strong>Agility:</strong> 20</li><li><strong>Sound:</strong> 30</li><li><strong>Stealth:</strong> 60</li> <li><strong>Smarts:</strong> 6</li><li><strong>Strength:</strong> 2</li><li><strong>Resistance:</strong> 5</li></ul>
                 </div>
             </div>
-
-            <div class="character-slot">
+             <div class="character-slot">
                  <img class="character-image" src="https://placehold.co/300x200/1a1a1a/39c0ed?text=Chester" alt="Chester" onerror="this.src='https://placehold.co/300x200/1a1a1a/cccccc?text=Image+Not+Found';">
                  <div class="character-details">
                     <h3>Chester</h3>
-                    <h4>Description</h4>
-                    <p class="description-text">
-                        Chester is not one to say much unless it aids him, and is quite a greedy one, always fighting over anything, be it bottlecaps or gold. Chester never shares and often upsets a lot of the other Holos. Chester is quite cranky and has been around the Mirage Crew since episode 1, but didn't get his first episode staring him until episode 33 - "The Bottlecap Thief.". Chester is easily described as rude, greedy, and ignorant, and is a good example of what not to be, as Chester never learns to share. Chester likes Pinedo as he sees her as a free source of things, and dislikes Flash and Lanberd, who keep trying to stop Chester from stealing.
-                    </p>
-
-                    <h4>Ability</h4>
-                    <div class="ability-passive-text">
-                        <p><strong>Name: Disguise</strong></p>
-                        <p>Chester can tuck in his arms, disguising himself as a prop for 5 seconds, making all animatronics lose interest in him. Cooldown: 60s.</p>
-                    </div>
-
-                    <h4>Passive</h4>
-                     <div class="ability-passive-text">
-                        <p><strong>Name: Greedy</strong></p>
-                        <p>Gain 2x tickets during nights.</p>
-                    </div>
-
-                    <h4>Stats</h4>
-                    <ul class="stats-list">
-                        <li><strong>Energy:</strong> 150</li>
-                        <li><strong>Health:</strong> 2</li>
-                        <li><strong>Speed:</strong> 1m/s</li>
-                        <li><strong>Agility:</strong> 60</li>
-                        <li><strong>Sound:</strong> 80</li>
-                        <li><strong>Stealth:</strong> 30</li>
-                        <li><strong>Smarts:</strong> 0</li>
-                        <li><strong>Strength:</strong> 9</li>
-                        <li><strong>Resistance:</strong> 10</li>
-                    </ul>
+                    <h4>Description</h4><p class="description-text">Chester is not one to say much unless it aids him...</p>
+                    <h4>Ability</h4><div class="ability-passive-text"><p><strong>Name: Disguise</strong></p><p>Chester can tuck in his arms...</p></div>
+                    <h4>Passive</h4><div class="ability-passive-text"><p><strong>Name: Greedy</strong></p><p>Gain 2x tickets during nights.</p></div>
+                    <h4>Stats</h4><ul class="stats-list"><li><strong>Energy:</strong> 150</li><li><strong>Health:</strong> 2</li><li><strong>Speed:</strong> 1m/s</li><li><strong>Agility:</strong> 60</li><li><strong>Sound:</strong> 80</li><li><strong>Stealth:</strong> 30</li><li><strong>Smarts:</strong> 0</li><li><strong>Strength:</strong> 9</li><li><strong>Resistance:</strong> 10</li></ul>
                 </div>
             </div>
-
             <div class="character-slot">
                  <img class="character-image" src="https://placehold.co/300x200/1a1a1a/39c0ed?text=Morka" alt="Morka" onerror="this.src='https://placehold.co/300x200/1a1a1a/cccccc?text=Image+Not+Found';">
                  <div class="character-details">
                     <h3>Morka</h3>
-                    <h4>Description</h4>
-                    <p class="description-text">Description coming soon...</p>
-
-                    <h4>Ability</h4>
-                    <div class="ability-passive-text">
-                        <p><strong>Name: Launch</strong></p>
-                        <p>This holo can use his long arms to launch him forward.</p>
-                        </div>
-
-                    <h4>Passive</h4>
-                     <div class="ability-passive-text">
-                        <p><strong>Name: Panic</strong></p>
-                        <p>When all tasks are completed, this Holo’s stealth goes down by 5 and agility is increased by 5.</p>
-                    </div>
-
-                    <h4>Stats</h4>
-                    <ul class="stats-list">
-                        <li><strong>Energy:</strong> 100</li>
-                        <li><strong>Health:</strong> 2</li>
-                        <li><strong>Speed:</strong> 4m/s</li>
-                        <li><strong>Agility:</strong> 5</li>
-                        <li><strong>Sound:</strong> 70</li>
-                        <li><strong>Stealth:</strong> 15</li>
-                        <li><strong>Smarts:</strong> 3</li>
-                        <li><strong>Strength:</strong> 3</li>
-                        <li><strong>Resistance:</strong> 0</li>
-                    </ul>
+                    <h4>Description</h4><p class="description-text">Description coming soon...</p>
+                    <h4>Ability</h4><div class="ability-passive-text"><p><strong>Name: Launch</strong></p><p>This holo can use his long arms...</p></div>
+                    <h4>Passive</h4><div class="ability-passive-text"><p><strong>Name: Panic</strong></p><p>When all tasks are completed...</p></div>
+                    <h4>Stats</h4><ul class="stats-list"><li><strong>Energy:</strong> 100</li><li><strong>Health:</strong> 2</li><li><strong>Speed:</strong> 4m/s</li><li><strong>Agility:</strong> 5</li><li><strong>Sound:</strong> 70</li><li><strong>Stealth:</strong> 15</li><li><strong>Smarts:</strong> 3</li><li><strong>Strength:</strong> 3</li><li><strong>Resistance:</strong> 0</li></ul>
                 </div>
             </div>
-
             <div class="character-slot">
                  <img class="character-image" src="https://placehold.co/300x200/1a1a1a/39c0ed?text=Ace" alt="Ace" onerror="this.src='https://placehold.co/300x200/1a1a1a/cccccc?text=Image+Not+Found';">
                  <div class="character-details">
                     <h3>Ace</h3>
-                    <h4>Description</h4>
-                    <p class="description-text">Description coming soon...</p>
-
-                    <h4>Ability</h4>
-                    <div class="ability-passive-text">
-                        <p><strong>Name: New Face</strong></p>
-                        <p>Randomly switch between 6 faces to have a specific buff:</p>
-                        <ul>
-                            <li>+10 Smarts</li>
-                            <li>+10 Strength</li>
-                            <li>+10 Resistance</li>
-                            <li>+1 Speed</li>
-                            <li>+50 Agility</li>
-                            <li>-50 Sound</li>
-                        </ul>
-                        </div>
-
-                    <h4>Passive</h4>
-                     <div class="ability-passive-text">
-                        <p><strong>Name: Patience</strong></p>
-                        <p>Ability cooldown goes down 2x faster when doing nothing and standing still.</p>
-                    </div>
-
-                    <h4>Stats</h4>
-                    <ul class="stats-list">
-                        <li><strong>Energy:</strong> 200</li>
-                        <li><strong>Health:</strong> 3</li>
-                        <li><strong>Speed:</strong> 3m/s</li>
-                        <li><strong>Agility:</strong> 20</li>
-                        <li><strong>Sound:</strong> 80</li>
-                        <li><strong>Stealth:</strong> 20</li>
-                        <li><strong>Smarts:</strong> 0</li>
-                        <li><strong>Strength:</strong> 0</li>
-                        <li><strong>Resistance:</strong> 0</li>
-                    </ul>
+                    <h4>Description</h4><p class="description-text">Description coming soon...</p>
+                    <h4>Ability</h4><div class="ability-passive-text"><p><strong>Name: New Face</strong></p><p>Randomly switch between 6 faces...</p><ul><li>+10 Smarts</li><li>+10 Strength</li><li>+10 Resistance</li><li>+1 Speed</li><li>+50 Agility</li><li>-50 Sound</li></ul></div>
+                    <h4>Passive</h4><div class="ability-passive-text"><p><strong>Name: Patience</strong></p><p>Ability cooldown goes down 2x faster...</p></div>
+                    <h4>Stats</h4><ul class="stats-list"><li><strong>Energy:</strong> 200</li><li><strong>Health:</strong> 3</li><li><strong>Speed:</strong> 3m/s</li><li><strong>Agility:</strong> 20</li><li><strong>Sound:</strong> 80</li><li><strong>Stealth:</strong> 20</li><li><strong>Smarts:</strong> 0</li><li><strong>Strength:</strong> 0</li><li><strong>Resistance:</strong> 0</li></ul>
                 </div>
             </div>
-
             <div class="character-slot">
                  <img class="character-image" src="https://placehold.co/300x200/1a1a1a/39c0ed?text=Reef" alt="Reef" onerror="this.src='https://placehold.co/300x200/1a1a1a/cccccc?text=Image+Not+Found';">
                  <div class="character-details">
                     <h3>Reef</h3>
-                    <h4>Description</h4>
-                    <p class="description-text">Description coming soon...</p>
-
-                    <h4>Ability</h4>
-                    <div class="ability-passive-text">
-                        <p><strong>Name: Sea’s Wrath</strong></p>
-                        <p>When hit, the animatronic that hurt Reef gets shocked and out of service for 10 seconds.</p>
-                        </div>
-
-                    <h4>Passive</h4>
-                     <div class="ability-passive-text">
-                        <p><strong>Name: Waterproof Gift</strong></p>
-                        <p>This Holo cannot be hurt by water and receives a benefit from it. Reef gains +1 speed and +4 strength and smarts when touching water within the last minute.</p>
-                    </div>
-
-                    <h4>Stats</h4>
-                    <ul class="stats-list">
-                        <li><strong>Energy:</strong> 100</li>
-                        <li><strong>Health:</strong> 4</li>
-                        <li><strong>Speed:</strong> 2m/s</li>
-                        <li><strong>Agility:</strong> 50</li>
-                        <li><strong>Sound:</strong> 10</li>
-                        <li><strong>Stealth:</strong> 40</li>
-                        <li><strong>Smarts:</strong> 2</li>
-                        <li><strong>Strength:</strong> 4</li>
-                        <li><strong>Resistance:</strong> 0</li>
-                    </ul>
+                    <h4>Description</h4><p class="description-text">Description coming soon...</p>
+                    <h4>Ability</h4><div class="ability-passive-text"><p><strong>Name: Sea’s Wrath</strong></p><p>When hit, the animatronic that hurt Reef...</p></div>
+                    <h4>Passive</h4><div class="ability-passive-text"><p><strong>Name: Waterproof Gift</strong></p><p>This Holo cannot be hurt by water...</p></div>
+                    <h4>Stats</h4><ul class="stats-list"><li><strong>Energy:</strong> 100</li><li><strong>Health:</strong> 4</li><li><strong>Speed:</strong> 2m/s</li><li><strong>Agility:</strong> 50</li><li><strong>Sound:</strong> 10</li><li><strong>Stealth:</strong> 40</li><li><strong>Smarts:</strong> 2</li><li><strong>Strength:</strong> 4</li><li><strong>Resistance:</strong> 0</li></ul>
                 </div>
             </div>
-
             <div class="character-slot">
                  <img class="character-image" src="https://placehold.co/300x200/1a1a1a/39c0ed?text=Clover" alt="Clover" onerror="this.src='https://placehold.co/300x200/1a1a1a/cccccc?text=Image+Not+Found';">
                  <div class="character-details">
                     <h3>Clover</h3>
-                    <h4>Description</h4>
-                    <p class="description-text">Description coming soon...</p>
-
-                    <h4>Ability</h4>
-                    <div class="ability-passive-text">
-                        <p><strong>Name: Burrow</strong></p>
-                        <p>Dig into the ground and move at 2 m/s for 10 seconds. During this time, you cannot be seen and are invincible. Cooldown: 5s.</p>
-                    </div>
-
-                    <h4>Passive</h4>
-                     <div class="ability-passive-text">
-                        <p><strong>Name: Lucky Leaf</strong></p>
-                        <p>When doing a task, have a 25% chance to instantly complete that task every 5 seconds, max of 3 times an area.</p>
-                    </div>
-
-                    <h4>Stats</h4>
-                    <ul class="stats-list">
-                        <li><strong>Energy:</strong> 0</li>
-                        <li><strong>Health:</strong> 2</li>
-                        <li><strong>Speed:</strong> 0m/s</li>
-                        <li><strong>Agility:</strong> 0</li>
-                        <li><strong>Sound:</strong> 5</li>
-                        <li><strong>Stealth:</strong> 75</li>
-                        <li><strong>Smarts:</strong> 0</li>
-                        <li><strong>Strength:</strong> 0</li>
-                        <li><strong>Resistance:</strong> 0</li>
-                    </ul>
+                    <h4>Description</h4><p class="description-text">Description coming soon...</p>
+                    <h4>Ability</h4><div class="ability-passive-text"><p><strong>Name: Burrow</strong></p><p>Dig into the ground...</p></div>
+                    <h4>Passive</h4><div class="ability-passive-text"><p><strong>Name: Lucky Leaf</strong></p><p>When doing a task, have a 25% chance...</p></div>
+                    <h4>Stats</h4><ul class="stats-list"><li><strong>Energy:</strong> 0</li><li><strong>Health:</strong> 2</li><li><strong>Speed:</strong> 0m/s</li><li><strong>Agility:</strong> 0</li><li><strong>Sound:</strong> 5</li><li><strong>Stealth:</strong> 75</li><li><strong>Smarts:</strong> 0</li><li><strong>Strength:</strong> 0</li><li><strong>Resistance:</strong> 0</li></ul>
                 </div>
             </div>
-
             <div class="character-slot">
                  <img class="character-image" src="https://placehold.co/300x200/1a1a1a/39c0ed?text=Flash" alt="Flash" onerror="this.src='https://placehold.co/300x200/1a1a1a/cccccc?text=Image+Not+Found';">
                  <div class="character-details">
                     <h3>Flash</h3>
-                    <h4>Description</h4>
-                    <p class="description-text">Description coming soon...</p>
-
-                    <h4>Ability</h4>
-                    <div class="ability-passive-text">
-                        <p><strong>Name: Blacklight Mode</strong></p>
-                        <p>When used, for a minute, Resistance is increased by 3, Smarts by 5, Strength by 5, and speed by 1. This ability can only be used once per area.</p>
-                        </div>
-
-                    <h4>Passive</h4>
-                     <div class="ability-passive-text">
-                        <p><strong>Name: Watcher</strong></p>
-                        <p>When doing a task, sees every nearby animatronic, even through walls.</p>
-                    </div>
-
-                    <h4>Stats</h4>
-                    <ul class="stats-list">
-                        <li><strong>Energy:</strong> 150</li>
-                        <li><strong>Health:</strong> 3</li>
-                        <li><strong>Speed:</strong> 3m/s</li>
-                        <li><strong>Agility:</strong> 50</li>
-                        <li><strong>Sound:</strong> 80</li>
-                        <li><strong>Stealth:</strong> 0</li>
-                        <li><strong>Smarts:</strong> 5</li>
-                        <li><strong>Strength:</strong> 5</li>
-                        <li><strong>Resistance:</strong> 0</li>
-                    </ul>
+                    <h4>Description</h4><p class="description-text">Description coming soon...</p>
+                    <h4>Ability</h4><div class="ability-passive-text"><p><strong>Name: Blacklight Mode</strong></p><p>When used, for a minute...</p></div>
+                    <h4>Passive</h4><div class="ability-passive-text"><p><strong>Name: Watcher</strong></p><p>When doing a task, sees every nearby animatronic...</p></div>
+                    <h4>Stats</h4><ul class="stats-list"><li><strong>Energy:</strong> 150</li><li><strong>Health:</strong> 3</li><li><strong>Speed:</strong> 3m/s</li><li><strong>Agility:</strong> 50</li><li><strong>Sound:</strong> 80</li><li><strong>Stealth:</strong> 0</li><li><strong>Smarts:</strong> 5</li><li><strong>Strength:</strong> 5</li><li><strong>Resistance:</strong> 0</li></ul>
                 </div>
             </div>
-
             <div class="character-slot">
                  <img class="character-image" src="https://placehold.co/300x200/1a1a1a/39c0ed?text=Phantasma+(TV)" alt="Phantasma (TV Form)" onerror="this.src='https://placehold.co/300x200/1a1a1a/cccccc?text=Image+Not+Found';">
                  <div class="character-details">
                     <h3>Phantasma (TV Form)</h3>
-                    <h4>Description</h4>
-                    <p class="description-text">Description coming soon...</p>
-
-                    <h4>Ability</h4>
-                    <div class="ability-passive-text">
-                        <p><strong>Name: Form Change</strong></p>
-                        <p>Switches to ghost form.</p>
-                        </div>
-
-                    <h4>Passive</h4>
-                     <div class="ability-passive-text">
-                        <p><strong>Name: Electronic Disturbance</strong></p>
-                        <p>Slows down any animatronics within 2 meters of you by 25%.</p>
-                    </div>
-
-                    <h4>Stats</h4>
-                    <ul class="stats-list">
-                        <li><strong>Energy:</strong> 100</li>
-                        <li><strong>Health:</strong> 3</li>
-                        <li><strong>Speed:</strong> 2m/s</li>
-                        <li><strong>Agility:</strong> 20</li>
-                        <li><strong>Sound:</strong> 70</li>
-                        <li><strong>Stealth:</strong> 0</li>
-                        <li><strong>Smarts:</strong> 7</li>
-                        <li><strong>Strength:</strong> 7</li>
-                        <li><strong>Resistance:</strong> 7</li>
-                    </ul>
+                    <h4>Description</h4><p class="description-text">Description coming soon...</p>
+                    <h4>Ability</h4><div class="ability-passive-text"><p><strong>Name: Form Change</strong></p><p>Switches to ghost form.</p></div>
+                    <h4>Passive</h4><div class="ability-passive-text"><p><strong>Name: Electronic Disturbance</strong></p><p>Slows down any animatronics within 2 meters...</p></div>
+                    <h4>Stats</h4><ul class="stats-list"><li><strong>Energy:</strong> 100</li><li><strong>Health:</strong> 3</li><li><strong>Speed:</strong> 2m/s</li><li><strong>Agility:</strong> 20</li><li><strong>Sound:</strong> 70</li><li><strong>Stealth:</strong> 0</li><li><strong>Smarts:</strong> 7</li><li><strong>Strength:</strong> 7</li><li><strong>Resistance:</strong> 7</li></ul>
                 </div>
             </div>
-
             <div class="character-slot">
                  <img class="character-image" src="https://placehold.co/300x200/1a1a1a/39c0ed?text=Phantasma+(Ghost)" alt="Phantasma (Ghost Form)" onerror="this.src='https://placehold.co/300x200/1a1a1a/cccccc?text=Image+Not+Found';">
                  <div class="character-details">
                     <h3>Phantasma (Ghost Form)</h3>
-                    <h4>Description</h4>
-                    <p class="description-text">Description coming soon...</p>
-
-                    <h4>Ability</h4>
-                    <div class="ability-passive-text">
-                        <p><strong>Name: Form Change</strong></p>
-                        <p>Switches to TV form, if within 3 meters of a TV.</p>
-                        </div>
-
-                    <h4>Passive</h4>
-                     <div class="ability-passive-text">
-                        <p><strong>Name: Bodiless</strong></p>
-                        <p>Allows you to go through some objects, however, only 3 times per round.</p>
-                    </div>
-
-                    <h4>Stats</h4>
-                    <ul class="stats-list">
-                        <li><strong>Energy:</strong> 150</li>
-                        <li><strong>Health:</strong> 3</li>
-                        <li><strong>Speed:</strong> 4m/s</li>
-                        <li><strong>Agility:</strong> 50</li>
-                        <li><strong>Sound:</strong> 0</li>
-                        <li><strong>Stealth:</strong> 60</li>
-                        <li><strong>Smarts:</strong> 1</li>
-                        <li><strong>Strength:</strong> N/A</li>
-                        <li><strong>Resistance:</strong> N/A</li>
-                    </ul>
+                    <h4>Description</h4><p class="description-text">Description coming soon...</p>
+                    <h4>Ability</h4><div class="ability-passive-text"><p><strong>Name: Form Change</strong></p><p>Switches to TV form...</p></div>
+                    <h4>Passive</h4><div class="ability-passive-text"><p><strong>Name: Bodiless</strong></p><p>Allows you to go through some objects...</p></div>
+                    <h4>Stats</h4><ul class="stats-list"><li><strong>Energy:</strong> 150</li><li><strong>Health:</strong> 3</li><li><strong>Speed:</strong> 4m/s</li><li><strong>Agility:</strong> 50</li><li><strong>Sound:</strong> 0</li><li><strong>Stealth:</strong> 60</li><li><strong>Smarts:</strong> 1</li><li><strong>Strength:</strong> N/A</li><li><strong>Resistance:</strong> N/A</li></ul>
                 </div>
             </div>
-
-            <div class="character-slot">
+             <div class="character-slot">
                  <img class="character-image" src="https://placehold.co/300x200/1a1a1a/39c0ed?text=Lanberd" alt="Lanberd" onerror="this.src='https://placehold.co/300x200/1a1a1a/cccccc?text=Image+Not+Found';">
                  <div class="character-details">
                     <h3>Lanberd</h3>
-                    <h4>Description</h4>
-                    <p class="description-text">Description coming soon...</p>
-
-                    <h4>Ability</h4>
-                    <div class="ability-passive-text">
-                        <p><strong>Name: Embers</strong></p>
-                        <p>Leave a pile of embers on the ground, lighting up the area for a minute.</p>
-                        </div>
-
-                    <h4>Passive</h4>
-                     <div class="ability-passive-text">
-                        <p><strong>Name: Well-lit</strong></p>
-                        <p>In a 3 meter radius around you, makes all nearby holo’s run 20% faster and complete tasks 50% faster.</p>
-                    </div>
-
-                    <h4>Stats</h4>
-                    <ul class="stats-list">
-                        <li><strong>Energy:</strong> 200</li>
-                        <li><strong>Health:</strong> 2</li>
-                        <li><strong>Speed:</strong> 2m/s</li>
-                        <li><strong>Agility:</strong> 50</li>
-                        <li><strong>Sound:</strong> 20</li>
-                        <li><strong>Stealth:</strong> 0</li>
-                        <li><strong>Smarts:</strong> 2</li>
-                        <li><strong>Strength:</strong> 2</li>
-                        <li><strong>Resistance:</strong> 4</li>
-                    </ul>
+                    <h4>Description</h4><p class="description-text">Description coming soon...</p>
+                    <h4>Ability</h4><div class="ability-passive-text"><p><strong>Name: Embers</strong></p><p>Leave a pile of embers...</p></div>
+                    <h4>Passive</h4><div class="ability-passive-text"><p><strong>Name: Well-lit</strong></p><p>In a 3 meter radius around you...</p></div>
+                    <h4>Stats</h4><ul class="stats-list"><li><strong>Energy:</strong> 200</li><li><strong>Health:</strong> 2</li><li><strong>Speed:</strong> 2m/s</li><li><strong>Agility:</strong> 50</li><li><strong>Sound:</strong> 20</li><li><strong>Stealth:</strong> 0</li><li><strong>Smarts:</strong> 2</li><li><strong>Strength:</strong> 2</li><li><strong>Resistance:</strong> 4</li></ul>
                 </div>
             </div>
-
             <div class="character-slot">
                  <img class="character-image" src="https://placehold.co/300x200/1a1a1a/39c0ed?text=Fruzo" alt="Fruzo" onerror="this.src='https://placehold.co/300x200/1a1a1a/cccccc?text=Image+Not+Found';">
                  <div class="character-details">
                     <h3>Fruzo</h3>
-                    <h4>Description</h4>
-                    <p class="description-text">Description coming soon...</p>
-
-                    <h4>Ability</h4>
-                    <div class="ability-passive-text">
-                        <p><strong>Name: Berry Sharing</strong></p>
-                        <p>Send a berry to another Holo, losing the berry, but healing them one heart.</p>
-                        </div>
-
-                    <h4>Passive</h4>
-                     <div class="ability-passive-text">
-                        <p><strong>Name: Fertilizer</strong></p>
-                        <p>When healing, instead of it going to health, gain that many berries instead.</p>
-                    </div>
-
-                    <h4>Stats</h4>
-                    <ul class="stats-list">
-                        <li><strong>Energy:</strong> 200</li>
-                        <li><strong>Health:</strong> 1</li>
-                        <li><strong>Speed:</strong> 3m/s</li>
-                        <li><strong>Agility:</strong> 33.33</li> <li><strong>Sound:</strong> 0</li>
-                        <li><strong>Stealth:</strong> 60</li>
-                        <li><strong>Smarts:</strong> 2</li>
-                        <li><strong>Strength:</strong> 1</li>
-                        <li><strong>Resistance:</strong> 0</li>
-                    </ul>
+                    <h4>Description</h4><p class="description-text">Description coming soon...</p>
+                    <h4>Ability</h4><div class="ability-passive-text"><p><strong>Name: Berry Sharing</strong></p><p>Send a berry to another Holo...</p></div>
+                    <h4>Passive</h4><div class="ability-passive-text"><p><strong>Name: Fertilizer</strong></p><p>When healing, instead of it going to health...</p></div>
+                    <h4>Stats</h4><ul class="stats-list"><li><strong>Energy:</strong> 200</li><li><strong>Health:</strong> 1</li><li><strong>Speed:</strong> 3m/s</li><li><strong>Agility:</strong> 33.33</li> <li><strong>Sound:</strong> 0</li><li><strong>Stealth:</strong> 60</li><li><strong>Smarts:</strong> 2</li><li><strong>Strength:</strong> 1</li><li><strong>Resistance:</strong> 0</li></ul>
                 </div>
             </div>
-
-             <div class="character-slot">
+            <div class="character-slot">
                  <img class="character-image" src="https://placehold.co/300x200/1a1a1a/39c0ed?text=Claws" alt="Claws" onerror="this.src='https://placehold.co/300x200/1a1a1a/cccccc?text=Image+Not+Found';">
                  <div class="character-details">
                     <h3>Claws</h3>
-                    <h4>Description</h4>
-                    <p class="description-text">Description coming soon...</p>
-
-                    <h4>Ability</h4>
-                    <div class="ability-passive-text">
-                        <p><strong>Name: Claw Draw</strong></p>
-                        <p>Get a random item, cannot get basic or very rare items.</p>
-                        </div>
-
-                    <h4>Passive</h4>
-                     <div class="ability-passive-text">
-                        <p><strong>Name: Pure Rush</strong></p>
-                        <p>Items effects last 75% as long, but have 2x the effect.</p>
-                    </div>
-
-                    <h4>Stats</h4>
-                    <ul class="stats-list">
-                        <li><strong>Energy:</strong> 50</li>
-                        <li><strong>Health:</strong> 3</li>
-                        <li><strong>Speed:</strong> 2m/s</li>
-                        <li><strong>Agility:</strong> 100</li>
-                        <li><strong>Sound:</strong> 60</li>
-                        <li><strong>Stealth:</strong> 20</li>
-                        <li><strong>Smarts:</strong> 0</li>
-                        <li><strong>Strength:</strong> 0</li>
-                        <li><strong>Resistance:</strong> 0</li>
-                    </ul>
+                    <h4>Description</h4><p class="description-text">Description coming soon...</p>
+                    <h4>Ability</h4><div class="ability-passive-text"><p><strong>Name: Claw Draw</strong></p><p>Get a random item...</p></div>
+                    <h4>Passive</h4><div class="ability-passive-text"><p><strong>Name: Pure Rush</strong></p><p>Items effects last 75% as long...</p></div>
+                    <h4>Stats</h4><ul class="stats-list"><li><strong>Energy:</strong> 50</li><li><strong>Health:</strong> 3</li><li><strong>Speed:</strong> 2m/s</li><li><strong>Agility:</strong> 100</li><li><strong>Sound:</strong> 60</li><li><strong>Stealth:</strong> 20</li><li><strong>Smarts:</strong> 0</li><li><strong>Strength:</strong> 0</li><li><strong>Resistance:</strong> 0</li></ul>
                 </div>
             </div>
-
-             <div class="character-slot">
+            <div class="character-slot">
                  <img class="character-image" src="https://placehold.co/300x200/1a1a1a/39c0ed?text=Yarnos" alt="Yarnos" onerror="this.src='https://placehold.co/300x200/1a1a1a/cccccc?text=Image+Not+Found';">
                  <div class="character-details">
                     <h3>Yarnos</h3>
-                    <h4>Description</h4>
-                    <p class="description-text">Description coming soon...</p>
-
-                    <h4>Ability</h4>
-                    <div class="ability-passive-text">
-                        <p><strong>Name: Windup</strong></p>
-                        <p>Pull on your tail to bring you back a bit towards the way you came.</p>
-                        </div>
-
-                    <h4>Passive</h4>
-                     <div class="ability-passive-text">
-                        <p><strong>Name: Unraveled</strong></p>
-                        <p>This Holo is constantly being unraveled as they walk further away from where they came from, slowing them down greatly, reducing agility, and extremely lowering strength and resistance the further away from the spawn they are.</p>
-                    </div>
-
-                    <h4>Stats</h4>
-                    <ul class="stats-list">
-                        <li><strong>Energy:</strong> 125</li>
-                        <li><strong>Health:</strong> 3</li>
-                        <li><strong>Speed:</strong> 5m/s</li>
-                        <li><strong>Agility:</strong> 100</li>
-                        <li><strong>Sound:</strong> 0</li>
-                        <li><strong>Stealth:</strong> 60</li>
-                        <li><strong>Smarts:</strong> 6</li>
-                        <li><strong>Strength:</strong> 10</li>
-                        <li><strong>Resistance:</strong> 10</li>
-                    </ul>
+                    <h4>Description</h4><p class="description-text">Description coming soon...</p>
+                    <h4>Ability</h4><div class="ability-passive-text"><p><strong>Name: Windup</strong></p><p>Pull on your tail...</p></div>
+                    <h4>Passive</h4><div class="ability-passive-text"><p><strong>Name: Unraveled</strong></p><p>This Holo is constantly being unraveled...</p></div>
+                    <h4>Stats</h4><ul class="stats-list"><li><strong>Energy:</strong> 125</li><li><strong>Health:</strong> 3</li><li><strong>Speed:</strong> 5m/s</li><li><strong>Agility:</strong> 100</li><li><strong>Sound:</strong> 0</li><li><strong>Stealth:</strong> 60</li><li><strong>Smarts:</strong> 6</li><li><strong>Strength:</strong> 10</li><li><strong>Resistance:</strong> 10</li></ul>
                 </div>
             </div>
-
-             <div class="character-slot">
+            <div class="character-slot">
                  <img class="character-image" src="https://placehold.co/300x200/1a1a1a/39c0ed?text=Zobo" alt="Zobo" onerror="this.src='https://placehold.co/300x200/1a1a1a/cccccc?text=Image+Not+Found';">
                  <div class="character-details">
                     <h3>Zobo</h3>
-                    <h4>Description</h4>
-                    <p class="description-text">Description coming soon...</p>
-
-                    <h4>Ability</h4>
-                    <div class="ability-passive-text">
-                        <p><strong>Name: Regather</strong></p>
-                        <p>This ability is only usable once every 80 tasks completed. This heals you one heart at the cost of 200 tickets.</p>
-                        </div>
-
-                    <h4>Passive</h4>
-                     <div class="ability-passive-text">
-                        <p><strong>Name: Unstable</strong></p>
-                        <p>This holo will topple over and lose a heart if they don’t do tasks for a while. Ontop of that, they lose shape and skills when hit, losing 2 in each task stat, 25 in energy, 25 in agility, and 1 in speed. This holo also cannot heal with items or other holos abilities.</p>
-                    </div>
-
-                    <h4>Stats</h4>
-                    <ul class="stats-list">
-                        <li><strong>Energy:</strong> 150</li>
-                        <li><strong>Health:</strong> 4</li>
-                        <li><strong>Speed:</strong> 4m/s</li>
-                        <li><strong>Agility:</strong> 40</li>
-                        <li><strong>Sound:</strong> 5</li>
-                        <li><strong>Stealth:</strong> 20</li>
-                        <li><strong>Smarts:</strong> 8</li>
-                        <li><strong>Strength:</strong> 8</li>
-                        <li><strong>Resistance:</strong> 8</li>
-                    </ul>
+                    <h4>Description</h4><p class="description-text">Description coming soon...</p>
+                    <h4>Ability</h4><div class="ability-passive-text"><p><strong>Name: Regather</strong></p><p>This ability is only usable once every 80 tasks completed...</p></div>
+                    <h4>Passive</h4><div class="ability-passive-text"><p><strong>Name: Unstable</strong></p><p>This holo will topple over...</p></div>
+                    <h4>Stats</h4><ul class="stats-list"><li><strong>Energy:</strong> 150</li><li><strong>Health:</strong> 4</li><li><strong>Speed:</strong> 4m/s</li><li><strong>Agility:</strong> 40</li><li><strong>Sound:</strong> 5</li><li><strong>Stealth:</strong> 20</li><li><strong>Smarts:</strong> 8</li><li><strong>Strength:</strong> 8</li><li><strong>Resistance:</strong> 8</li></ul>
                 </div>
             </div>
+            </div> </div> <script>
+        // Import Firebase modules (CDN)
+        const firebaseApp = firebase.app;
+        const firestore = firebase.firestore;
+        const analytics = firebase.analytics;
 
-        </div> </div> </body>
+        // --- Explanation of Login and Content Visibility Logic ---
+        /*
+        ### Understanding the Login and Visibility Logic (Integrated with Holos Page)
+
+        1.  **Initial State (CSS & HTML):**
+            * The HTML contains two main sections: `#login-section` and `#holos-content`.
+            * By default, CSS hides the Holos content (`#holos-content { display: none; }`).
+            * The login section (`#login-section`) is visible by default.
+
+        2.  **Checking Login Status on Page Load (`checkLoginAndLoad` function):**
+            * When the page loads (`window.onload`), `checkLoginAndLoad` runs.
+            * It checks `localStorage` for `isLoggedIn` and `loggedInUsername`.
+            * **If `isLoggedIn` is 'true'**:
+                * It hides the login form (`#login-section`).
+                * It shows the Holos content wrapper (`#holos-content`).
+                * The `body`'s flexbox centering is less critical now, content flows naturally.
+            * **If `isLoggedIn` is not 'true'**:
+                * It ensures the login form (`#login-section`) is visible.
+                * The Holos content (`#holos-content`) remains hidden.
+                * The `body`'s flexbox rules keep the login form centered.
+
+        3.  **Login Process (`login` function):**
+            * Called when the "Login" button is clicked.
+            * Queries Firebase Firestore "Accounts" collection based on entered username.
+            * **Password Check:** Compares entered password with stored password (plain text - INSECURE).
+            * **If Credentials Match:**
+                * Sets `isLoggedIn = true` and stores username.
+                * Saves `isLoggedIn='true'` and username to `localStorage` for persistence.
+                * Hides the login form (`#login-section`).
+                * Shows the Holos content (`#holos-content`).
+            * **If Credentials Don't Match:** Shows an alert; page remains in the login state.
+
+        **In Summary:** The page now requires login. It uses CSS to control initial visibility, JavaScript and `localStorage` to check/persist login status, and Firebase to verify credentials. Successful login hides the form and reveals the Holos character grid.
+        */
+        // --- End of Explanation ---
+
+        // --- Firebase Configuration ---
+        // IMPORTANT: Replace with your actual Firebase config.
+        const firebaseConfig = {
+             apiKey: "AIzaSyC8923ceG_Hcp5k3v0qjO_yYgKEoXB4n_A", // Replace with your actual API key
+            authDomain: "miragepark-1e12a.firebaseapp.com",
+            projectId: "miragepark-1e12a",
+            storageBucket: "miragepark-1e12a.appspot.com",
+            messagingSenderId: "11545240206",
+            appId: "1:11545240206:web:d36635f6db96aa49025fdf",
+            measurementId: "G-K2KGDZ3Q17"
+        };
+
+        // --- Initialize Firebase ---
+        let app;
+        let db;
+        let analyticsInstance;
+        try {
+            // Check if Firebase is already initialized to avoid errors on hot-reloads
+            if (!firebase.apps.length) {
+                 app = firebase.initializeApp(firebaseConfig);
+            } else {
+                 app = firebase.app(); // Get the default app if already initialized
+            }
+            db = firebase.firestore();
+            // analyticsInstance = firebase.analytics(); // Optional: Uncomment if using Analytics
+            console.log("Firebase initialized successfully.");
+        } catch (error) {
+            console.error("Error initializing Firebase:", error);
+            alert("Could not initialize Firebase. Some features may not work.");
+        }
+
+        // --- Global Variables ---
+        let loggedInUsername = localStorage.getItem('loggedInUsername') || "";
+        let isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+
+        // --- Utility Functions ---
+        async function ensureFirestoreReady() {
+            if (!db) {
+                console.warn("Firestore not initialized, attempting re-initialization.");
+                try {
+                    if (!firebase.apps.length) {
+                        firebase.initializeApp(firebaseConfig);
+                    }
+                    db = firebase.firestore();
+                    if (!db) throw new Error("Firestore still not available after re-initialization.");
+                } catch (error) {
+                    console.error("Failed to ensure Firestore readiness:", error);
+                    alert("Database connection error. Please refresh the page.");
+                    return null;
+                }
+            }
+            return db;
+        }
+
+        // --- UI Update Function ---
+        function updateUIForLoginState(loggedIn) {
+             const loginSection = document.getElementById('login-section');
+             const holosContent = document.getElementById('holos-content');
+             const bodyElement = document.body;
+
+             if (loggedIn) {
+                 console.log(`Updating UI: User ${loggedInUsername} is logged in.`);
+                 if(loginSection) loginSection.style.display = 'none';
+                 if(holosContent) holosContent.style.display = 'block'; // Show Holos content
+                 // Adjust body style if needed (e.g., remove centering)
+                 bodyElement.style.justifyContent = 'flex-start';
+                 bodyElement.style.alignItems = 'flex-start';
+             } else {
+                 console.log("Updating UI: User is not logged in.");
+                 if(loginSection) loginSection.style.display = 'block'; // Show login form
+                 if(holosContent) holosContent.style.display = 'none'; // Hide Holos content
+                 // Ensure body centering for login form
+                 bodyElement.style.justifyContent = 'center';
+                 bodyElement.style.alignItems = 'center';
+             }
+        }
+
+
+        // --- Initialization ---
+        async function checkLoginAndLoad() {
+            const firestoreDb = await ensureFirestoreReady();
+            // No need to check firestoreDb here, login check is local first
+            updateUIForLoginState(isLoggedIn); // Update UI based on localStorage status
+        }
+        // Run check on window load
+        window.onload = checkLoginAndLoad;
+
+
+        // --- Authentication ---
+        async function login() {
+            const firestoreDb = await ensureFirestoreReady();
+            if (!firestoreDb) {
+                 alert("Database connection error. Cannot log in.");
+                 return;
+            }
+
+            const enteredUsername = document.getElementById('username').value.trim();
+            const enteredPassword = document.getElementById('password').value.trim();
+
+            if (!enteredUsername || !enteredPassword) {
+                alert("Please enter both username and password.");
+                return;
+            }
+
+            console.log(`Attempting login for user: ${enteredUsername}`);
+
+            try {
+                const accountsRef = firestoreDb.collection("Accounts");
+                // Query Firestore for the entered username
+                const querySnapshot = await accountsRef.where("username", "==", enteredUsername).get();
+
+                if (querySnapshot.empty) {
+                    alert("No account found with that username.");
+                    console.warn(`Login failed: Username ${enteredUsername} not found.`);
+                    return;
+                }
+
+                let validCredentials = false;
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    // *** INSECURE: Plain text password comparison ***
+                    // In a real app, compare hashed passwords.
+                    if (data.password === enteredPassword) {
+                        validCredentials = true;
+                        loggedInUsername = enteredUsername; // Store username globally
+                        console.log(`Login successful for user: ${loggedInUsername}`);
+                    }
+                });
+
+                if (validCredentials) {
+                    isLoggedIn = true;
+                    localStorage.setItem('loggedInUsername', loggedInUsername); // Persist username
+                    localStorage.setItem('isLoggedIn', 'true'); // Persist login status
+                    alert("Login successful!");
+                    updateUIForLoginState(true); // Update UI to show Holos content
+                } else {
+                    alert("Invalid password.");
+                    console.warn(`Login failed: Invalid password for user ${enteredUsername}.`);
+                    // Clear potential incorrect username from localStorage if login fails
+                    // localStorage.removeItem('loggedInUsername');
+                    // localStorage.removeItem('isLoggedIn');
+                    // isLoggedIn = false;
+                    // loggedInUsername = "";
+                    updateUIForLoginState(false); // Ensure UI is in logged-out state
+                }
+            } catch (error) {
+                console.error("Error retrieving account during login: ", error);
+                alert("Error logging in. Please check the console and try again later.");
+            }
+        }
+        // Make login function globally accessible for the button's onclick
+        window.login = login;
+
+        // Optional Logout Function (if you change the Back button)
+        function logout() {
+            console.log(`Logging out user: ${loggedInUsername}`);
+            localStorage.removeItem('loggedInUsername');
+            localStorage.removeItem('isLoggedIn');
+            isLoggedIn = false;
+            loggedInUsername = "";
+            updateUIForLoginState(false); // Update UI to show login form
+            // Optionally redirect to a login page or refresh
+            // window.location.reload();
+        }
+        window.logout = logout; // Make logout globally accessible if needed
+
+    </script>
+
+</body>
 </html>
