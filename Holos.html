@@ -198,7 +198,17 @@
             line-height: 1.6;
             color: #ccc;
             /* Default white-space: normal allows text wrapping */
+            /* Ensure empty descriptions don't take up extra space */
+            min-height: 1.6em; /* Approx 1 line height to prevent collapse */
         }
+        .description-text:empty {
+             min-height: 0; /* Allow truly empty ones to collapse */
+             margin-bottom: -1rem; /* Pull subsequent elements up */
+        }
+        .description-text:empty + h4 {
+            margin-top: -1rem; /* Adjust spacing if description is empty */
+        }
+
 
         /* Ability/Passive Text */
         .ability-passive-text p {
@@ -273,7 +283,7 @@
                 <img class="character-image" src="https://placehold.co/300x200/1a1a1a/39c0ed?text=Pinedo" alt="Pinedo" onerror="this.src='https://placehold.co/300x200/1a1a1a/cccccc?text=Image+Not+Found';">
                 <div class="character-details">
                     <h3>Pinedo</h3>
-                    <p class="catchphrase">"Heads up... or off!"</p>
+                    <p class="catchphrase">"Heads up... or.. off.."</p>
                     <h4>Description</h4>
                     <p class="description-text">Pinedo doesn't like to be seen; often described as shy, she is rarely seen with the Mirage Crew. She's always nervous about losing her head, quite literally. Being detached from her body, she uses her third arm to hold onto it. Pinedo premiered in episode 36 - "Careful what you wish for". Pinedo doesn't like coming up on stage often, but tends to be made to on weekend shows. She is often described as shy, anxious, and nervous, and shows kids it's okay to be worried, as she gets over it in every episode she appears in. Pinedo is friends with Rubix, and Ace, but dislikes Rica.</p>
                     <h4>Ability</h4>
@@ -287,7 +297,7 @@
                  <img class="character-image" src="https://placehold.co/300x200/1a1a1a/39c0ed?text=Chester" alt="Chester" onerror="this.src='https://placehold.co/300x200/1a1a1a/cccccc?text=Image+Not+Found';">
                  <div class="character-details">
                     <h3>Chester</h3>
-                    <p class="catchphrase">"What's inside is mine."</p>
+                    <p class="catchphrase">"What's mine is only mine!"</p>
                     <h4>Description</h4>
                     <p class="description-text">Chester is not one to say much unless it aids him, and is quite a greedy one, always fighting over anything, be it bottlecaps or gold. Chester never shares and often upsets a lot of the other Holos. Chester is quite cranky and has been around the Mirage Crew since episode 1, but didn't get his first episode staring him until episode 33 - "The Bottlecap Thief.". Chester is easily described as rude, greedy, and ignorant, and is a good example of what not to be, as Chester never learns to share. Chester likes Pinedo as he sees her as a free source of things, and dislikes Flash and Lanberd, who keep trying to stop Chester from stealing.</p>
                     <h4>Ability</h4>
@@ -303,7 +313,7 @@
                     <h3>Morka</h3>
                      <p class="catchphrase">"Going up!"</p>
                     <h4>Description</h4>
-                    <p class="description-text">Morka is lanky and surprisingly agile, using his long limbs to traverse the environment in unconventional ways. He's easily startled but quick to react.</p>
+                    <p class="description-text"></p>
                     <h4>Ability</h4>
                     <div class="ability-passive-text"><p><strong>Name: Launch</strong></p><p>This holo can use his long arms to launch himself vertically or horizontally a short distance, allowing access to high places or quick escapes.</p></div>
                     <h4>Passive</h4>
@@ -317,7 +327,7 @@
                     <h3>Ace</h3>
                      <p class="catchphrase">"Feeling lucky?"</p>
                     <h4>Description</h4>
-                    <p class="description-text">Ace is a wildcard, a gambler whose abilities reflect his unpredictable nature. His face changes, altering his stats and capabilities moment to moment.</p>
+                     <p class="description-text"></p>
                     <h4>Ability</h4>
                     <div class="ability-passive-text"><p><strong>Name: New Face</strong></p><p>Randomly switch between 6 faces, each providing a different temporary stat boost or effect for 20 seconds:</p><ul><li>+10 Smarts (Task efficiency)</li><li>+10 Strength (Interaction force)</li><li>+10 Resistance (Damage reduction)</li><li>+1 Speed (Movement)</li><li>+50 Agility (Maneuverability)</li><li>-50 Sound (Quieter movement)</li></ul></div>
                     <h4>Passive</h4>
@@ -331,7 +341,7 @@
                     <h3>Reef</h3>
                      <p class="catchphrase">"Don't make waves."</p>
                     <h4>Description</h4>
-                    <p class="description-text">Reef is a water-themed Holo, calm and resilient, but capable of unleashing aquatic fury when provoked. He excels in watery environments.</p>
+                     <p class="description-text"></p>
                     <h4>Ability</h4>
                     <div class="ability-passive-text"><p><strong>Name: Sea’s Wrath</strong></p><p>When hit, the animatronic that hurt Reef is drenched, slowing their movement and slightly impairing their sensors for 10 seconds. This effect has a cooldown.</p></div>
                     <h4>Passive</h4>
@@ -345,7 +355,7 @@
                     <h3>Clover</h3>
                      <p class="catchphrase">"Luck of the draw."</p>
                     <h4>Description</h4>
-                    <p class="description-text">Small, quiet, and incredibly lucky, Clover relies on stealth and good fortune to survive. Often found hiding or digging.</p>
+                     <p class="description-text"></p>
                     <h4>Ability</h4>
                     <div class="ability-passive-text"><p><strong>Name: Burrow</strong></p><p>Dig into the ground (soft surfaces only), becoming completely hidden and undetectable for up to 15 seconds. Cannot move while burrowed.</p></div>
                     <h4>Passive</h4>
@@ -359,7 +369,7 @@
                     <h3>Flash</h3>
                      <p class="catchphrase">"Caught you!"</p>
                     <h4>Description</h4>
-                    <p class="description-text">Flash uses light-based abilities, acting as a mobile watchman. He can illuminate areas or stun threats, but isn't very subtle.</p>
+                     <p class="description-text"></p>
                     <h4>Ability</h4>
                     <div class="ability-passive-text"><p><strong>Name: Blacklight Mode</strong></p><p>When used, for one minute, Flash emits a blacklight revealing hidden clues, paths, or items within a short radius. Also briefly stuns certain types of animatronics caught directly in the initial burst.</p></div>
                     <h4>Passive</h4>
@@ -371,9 +381,9 @@
                  <img class="character-image" src="https://placehold.co/300x200/1a1a1a/39c0ed?text=Phantasma+(TV)" alt="Phantasma (TV Form)" onerror="this.src='https://placehold.co/300x200/1a1a1a/cccccc?text=Image+Not+Found';">
                  <div class="character-details">
                     <h3>Phantasma (TV Form)</h3>
-                     <p class="catchphrase">"Static cling."</p>
+                    <p class="catchphrase">"Boo."</p>
                     <h4>Description</h4>
-                    <p class="description-text">Phantasma exists between states. In TV form, it's solid but emits an aura that interferes with nearby electronics and animatronics.</p>
+                     <p class="description-text"></p>
                     <h4>Ability</h4>
                     <div class="ability-passive-text"><p><strong>Name: Form Change</strong></p><p>Switches to ghost form. Takes 3 seconds during which Phantasma is vulnerable.</p></div>
                     <h4>Passive</h4>
@@ -385,9 +395,9 @@
                  <img class="character-image" src="https://placehold.co/300x200/1a1a1a/39c0ed?text=Phantasma+(Ghost)" alt="Phantasma (Ghost Form)" onerror="this.src='https://placehold.co/300x200/1a1a1a/cccccc?text=Image+Not+Found';">
                  <div class="character-details">
                     <h3>Phantasma (Ghost Form)</h3>
-                     <p class="catchphrase">"Boo."</p>
+                    <p class="catchphrase">"Boo."</p>
                     <h4>Description</h4>
-                    <p class="description-text">In Ghost form, Phantasma is incorporeal, fast, and silent, perfect for scouting or escaping, but unable to interact physically.</p>
+                     <p class="description-text"></p>
                     <h4>Ability</h4>
                     <div class="ability-passive-text"><p><strong>Name: Form Change</strong></p><p>Switches to TV form. Takes 1 second. Can be initiated near specific electronic objects to 'possess' them briefly.</p></div>
                     <h4>Passive</h4>
@@ -401,7 +411,7 @@
                     <h3>Lanberd</h3>
                      <p class="catchphrase">"Light the way."</p>
                     <h4>Description</h4>
-                    <p class="description-text">Lanberd is a living lantern, providing light and warmth. He's not fast, but his embers can create hazards or illuminate paths.</p>
+                     <p class="description-text"></p>
                     <h4>Ability</h4>
                     <div class="ability-passive-text"><p><strong>Name: Embers</strong></p><p>Leave a pile of embers on the ground that glows brightly for 1 minute. Animatronics that step on embers are briefly slowed and alerted.</p></div>
                     <h4>Passive</h4>
@@ -415,7 +425,7 @@
                     <h3>Fruzo</h3>
                      <p class="catchphrase">"Have a berry good time!"</p>
                     <h4>Description</h4>
-                    <p class="description-text">Fruzo is a plant-based Holo focused on support and growth. He can share energy and use healing properties in unique ways.</p>
+                     <p class="description-text"></p>
                     <h4>Ability</h4>
                     <div class="ability-passive-text"><p><strong>Name: Berry Sharing</strong></p><p>Send a berry to another Holo within 15 meters, restoring a small amount of their energy instantly.</p></div>
                     <h4>Passive</h4>
@@ -429,7 +439,7 @@
                     <h3>Claws</h3>
                      <p class="catchphrase">"What'll it be?"</p>
                     <h4>Description</h4>
-                    <p class="description-text">Modeled after a claw machine, Claws uses random chance to grab items, offering unpredictable utility but consuming energy quickly.</p>
+                     <p class="description-text"></p>
                     <h4>Ability</h4>
                     <div class="ability-passive-text"><p><strong>Name: Claw Draw</strong></p><p>Get a random item (e.g., speed boost, temporary shield, noise maker, small heal, dud). Consumes significant energy.</p></div>
                     <h4>Passive</h4>
@@ -443,7 +453,7 @@
                     <h3>Yarnos</h3>
                      <p class="catchphrase">"Let's unwind!"</p>
                     <h4>Description</h4>
-                    <p class="description-text">Yarnos is made of yarn, constantly unraveling but using this to his advantage for speed and maneuverability.</p>
+                     <p class="description-text"></p>
                     <h4>Ability</h4>
                     <div class="ability-passive-text"><p><strong>Name: Windup</strong></p><p>Pull on your tail to wind yourself up. Release to gain a massive burst of speed in a straight line for 2 seconds. Difficult to steer during the burst.</p></div>
                     <h4>Passive</h4>
@@ -455,9 +465,9 @@
                  <img class="character-image" src="https://placehold.co/300x200/1a1a1a/39c0ed?text=Zobo" alt="Zobo" onerror="this.src='https://placehold.co/300x200/1a1a1a/cccccc?text=Image+Not+Found';">
                  <div class="character-details">
                     <h3>Zobo</h3>
-                     <p class="catchphrase">"Built different... mostly."</p>
+                    <p class="catchphrase">"We are many, yet one, why not join us for some fun?"</p>
                     <h4>Description</h4>
-                    <p class="description-text">Zobo appears cobbled together from spare parts, making him somewhat unstable but surprisingly resilient and resourceful.</p>
+                     <p class="description-text"></p>
                     <h4>Ability</h4>
                     <div class="ability-passive-text"><p><strong>Name: Regather</strong></p><p>This ability is only usable once every 80 tasks completed (cumulative across all Holos). Instantly regain full health and energy. Causes a loud noise upon activation.</p></div>
                     <h4>Passive</h4>
