@@ -308,6 +308,116 @@
             font-size: 1.2rem;
             color: #39c0ed;
         }
+         .completed-task .task-data {
+            font-size: 1rem;
+            color: #ffdb58;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+            margin-top: 10px;
+        }
+        .completed-task .task-data img {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        /* Upload Modal Styles */
+        #uploadModal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        #uploadModal .modal-content {
+            background-color: #1a1a1a;
+            color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 600px;
+            position: relative;
+            text-align: left;
+        }
+
+        #uploadModal .modal-content h2 {
+            color: #39c0ed;
+            margin-bottom: 20px;
+        }
+
+        #uploadModal .modal-content label {
+            display: block;
+            margin-top: 10px;
+            color: #fff;
+        }
+
+        #uploadModal .modal-content input[type="file"] {
+            margin-top: 5px;
+            color: #fff;
+        }
+
+        #uploadModal .modal-content textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            background-color: #222;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            resize: none;
+            height: 100px;
+        }
+
+        #uploadModal .modal-content .upload-buttons {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+            gap: 10px;
+        }
+
+        #uploadModal .modal-content .upload-btn,
+        #uploadModal .modal-content .cancel-upload-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #uploadModal .modal-content .upload-btn {
+            background-color: #39c0ed;
+            color: #fff;
+        }
+
+        #uploadModal .modal-content .upload-btn:hover {
+            background-color: #25a7c7;
+        }
+
+        #uploadModal .modal-content .cancel-upload-btn {
+            background-color: #f44336;
+            color: #fff;
+        }
+
+        #uploadModal .modal-content .cancel-upload-btn:hover {
+            background-color: #d32f2f;
+        }
+
+        #uploadModal .modal-content .close-upload-modal {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #fff;
+        }
+
     </style>
     <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-firestore-compat.js"></script>
@@ -373,8 +483,23 @@
             <div class="confirmation-content">
                 <p>Are you sure you want to complete this task?</p>
                 <div class="confirmation-buttons">
-                    <button class="confirm-btn" onclick="confirmComplete(true)">Confirm</button>
+                    <button class="confirm-btn" onclick="showUploadModal()">Confirm</button>
                     <button class="cancel-btn" onclick="confirmComplete(false)">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="uploadModal" class="modal">
+            <div class="modal-content">
+                <span class="close-upload-modal" onclick="closeUploadModal()">&times;</span>
+                <h2>Upload Work</h2>
+                <label for="fileUpload">Attach File:</label>
+                <input type="file" id="fileUpload" accept="image/*, audio/*, video/*, .pdf, .doc, .docx, .txt, .zip, .rar" />
+                <label for="codePaste">Paste Code/Text:</label>
+                <textarea id="codePaste"></textarea>
+                <div class="upload-buttons">
+                    <button class="upload-btn" onclick="uploadAndComplete()">Upload and Complete</button>
+                    <button class="cancel-upload-btn" onclick="closeUploadModal()">Cancel</button>
                 </div>
             </div>
         </div>
@@ -418,6 +543,8 @@
         let loggedInUsername = localStorage.getItem('loggedInUsername') || ""; // Load from localStorage
         let isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
         let currentTaskToComplete = null; // To store the ID of the task being confirmed for completion
+        let fileToUpload = null; // To store the selected file
+        let codePasteContent = ""; // To store the pasted code/text
 
         // --- Utility Functions ---
         // Function to ensure Firebase Firestore is ready before database calls
@@ -609,6 +736,20 @@
                         const formattedCompletedDate = task.completedAt && task.completedAt.toDate
                             ? task.completedAt.toDate().toLocaleString()
                             : "N/A";
+
+                        let workDataDisplay = 'No work data available.';
+                        if (task.fileData) {
+                            const fileType = task.fileData.type;
+                            if (fileType && fileType.startsWith('image/')) {
+                                workDataDisplay = `<img src="${task.fileData.url}" alt="Uploaded Work" />`;
+                            } else {
+                                workDataDisplay = `File: ${task.fileData.name}, Size: ${task.fileData.size} bytes.  <a href="${task.fileData.url}" download="${task.fileData.name}">Download</a>`;
+                            }
+                        }
+                        else if (task.codePaste) {
+                            workDataDisplay = `Code/Text: <pre style="white-space: pre-wrap; font-family: monospace;">${task.codePaste}</pre>`;
+                        }
+
                         taskElement.innerHTML = `
                             <div class="task-title">${task.title || 'No Title'}</div>
                             <div class="task-desc">${task.description || 'No Description'}</div>
@@ -617,6 +758,7 @@
                             <div class="task-creator">Created by: ${task.creator || 'Unknown'}</div>
                             <div class="task-completed-by">Completed by: ${task.completedBy || 'Unknown'}</div>
                             <div class="task-completed-at">Completed At: ${formattedCompletedDate}</div>
+                            <div class="task-data">Work Data: ${workDataDisplay}</div>
                         `;
                         // Append below the heading
                         completedTasksContainer.appendChild(taskElement);
@@ -719,7 +861,7 @@
         }
         window.addTask = addTask; // Make function accessible globally
 
-        // --- Complete Task Confirmation ---
+        // --- Complete Task Confirmation and Upload ---
         // Show Confirmation Dialog
         function showConfirmation(taskId) {
             if (!taskId) {
@@ -732,54 +874,134 @@
         }
         window.showConfirmation = showConfirmation; // Make function accessible globally
 
+
+
+        // --- Upload Modal Functions ---
+        function showUploadModal() {
+            if (!currentTaskToComplete) {
+                console.error("showUploadModal called without a task ID.");
+                alert("Error: No task selected to complete.");
+                return;
+            }
+            document.getElementById('confirmationDialog').style.display = 'none'; // Hide confirmation dialog
+            document.getElementById('uploadModal').style.display = 'flex';
+        }
+        window.showUploadModal = showUploadModal;
+
+        function closeUploadModal() {
+            document.getElementById('uploadModal').style.display = 'none';
+            // Clear form elements
+            document.getElementById('fileUpload').value = '';
+            document.getElementById('codePaste').value = '';
+            fileToUpload = null;
+            codePasteContent = '';
+        }
+        window.closeUploadModal = closeUploadModal;
+
+        // Handle file selection
+        document.getElementById('fileUpload').addEventListener('change', (event) => {
+            fileToUpload = event.target.files[0];
+            console.log("File selected:", fileToUpload);
+        });
+
+        // Handle code/text paste
+        document.getElementById('codePaste').addEventListener('input', (event) => {
+            codePasteContent = event.target.value;
+            console.log("Code/Text pasted:", codePasteContent);
+        });
+
+        // Function to handle the upload and complete task process
+        async function uploadAndComplete() {
+            const firestoreDb = await ensureFirestoreReady();
+            if (!firestoreDb) return;
+
+            if (!currentTaskToComplete) {
+                console.error("uploadAndComplete called without a task ID.");
+                alert("Error: No task selected to complete.");
+                return;
+            }
+
+            const taskId = currentTaskToComplete;
+            currentTaskToComplete = null; // Reset
+
+            let fileData = null;
+            let codePaste = null;
+
+            if (fileToUpload) {
+                // In a real application, you would upload the file to Firebase Storage
+                // and store the download URL in Firestore.  For this example, we
+                // just store the file name and size.  DO NOT STORE THE ACTUAL FILE
+                // DATA DIRECTLY IN FIRESTORE.
+                const fileType = fileToUpload.type;
+                fileData = {
+                    name: fileToUpload.name,
+                    size: fileToUpload.size,
+                    type: fileType,
+                    // url: 'your-file-storage-url'  <---  DO NOT STORE FILE DATA LIKE THIS
+                };
+                console.log(`File data: ${fileData.name}, ${fileData.size}, type: ${fileType}`);
+            } else if (codePasteContent) {
+                codePaste = codePasteContent;
+                console.log(`Code/Text: ${codePaste.substring(0, 20)}...`); // Log first 20 chars
+            } else {
+                alert("Please upload a file or paste code/text.");
+                return;
+            }
+
+           try {
+                // 1. Get the task data from 'tasks' collection
+                const taskDocRef = firestoreDb.collection("tasks").doc(taskId);
+                const taskDoc = await taskDocRef.get();
+
+                if (!taskDoc.exists) {
+                    console.error(`Task with ID ${taskId} not found in 'tasks' collection.`);
+                    alert("Error: Task not found. It might have been already completed or deleted.");
+                    loadTasks(); // Refresh
+                    return;
+                }
+
+                const taskData = taskDoc.data();
+
+                // 2. Add to 'completedTasks' with file/code data
+                const completedTaskData = {
+                    ...taskData,
+                    completedBy: loggedInUsername,
+                    completedAt: firestore.FieldValue.serverTimestamp(),
+                    fileData: fileData,  // Store file metadata (not the file itself)
+                    codePaste: codePaste, // Store code/text
+                };
+                await firestoreDb.collection("completedTasks").add(completedTaskData);
+                console.log(`Task ${taskId} moved to completedTasks with upload data.`);
+
+                // 3. Delete from 'tasks'
+                await taskDocRef.delete();
+                console.log(`Task ${taskId} deleted from tasks.`);
+
+                // 4. Refresh lists and close modal
+                loadTasks();
+                loadCompletedTasks();
+                closeUploadModal();
+                alert("Task completed and work uploaded successfully!");
+
+            } catch (error) {
+                console.error("Error completing task and uploading: ", error);
+                alert("Failed to complete task and upload. Please try again.");
+            }
+        }
+        window.uploadAndComplete = uploadAndComplete;
+
+
         // Handle Confirmation Dialog Response
         async function confirmComplete(confirmed) {
-            const firestoreDb = await ensureFirestoreReady();
             const dialog = document.getElementById('confirmationDialog');
             dialog.style.display = 'none'; // Hide dialog regardless of choice
 
             if (confirmed && currentTaskToComplete) {
                 console.log(`User confirmed completion for task ID: ${currentTaskToComplete}`);
-                const taskId = currentTaskToComplete; // Local copy
-                currentTaskToComplete = null; // Reset global variable
-
-                try {
-                    // 1. Get the task data from 'tasks' collection
-                    const taskDocRef = firestoreDb.collection("tasks").doc(taskId);
-                    const taskDoc = await taskDocRef.get();
-
-                    if (!taskDoc.exists) {
-                        console.error(`Task with ID ${taskId} not found in 'tasks' collection.`);
-                        alert("Error: Task not found. It might have been already completed or deleted.");
-                        loadTasks(); // Refresh list in case it was removed elsewhere
-                        return;
-                    }
-
-                    const taskData = taskDoc.data();
-
-                    // 2. Add the task data to the 'completedTasks' collection
-                    await firestoreDb.collection("completedTasks").add({
-                        ...taskData, // Spread existing task data
-                        completedBy: loggedInUsername, // Add completer username
-                        completedAt: firestore.FieldValue.serverTimestamp() // Add completion timestamp
-                    });
-                    console.log(`Task ${taskId} moved to completedTasks.`);
-
-                    // 3. Delete the task from the 'tasks' collection
-                    await taskDocRef.delete();
-                    console.log(`Task ${taskId} deleted from tasks collection.`);
-
-                    // 4. Reload both task lists to reflect changes
-                    loadTasks();
-                    loadCompletedTasks();
-                    alert("Task marked as complete!");
-
-                } catch (error) {
-                    console.error(`Error completing task ${taskId}:`, error); // Log the specific error
-                    alert(`Failed to complete task. Error: ${error.message}. Please try again.`);
-                }
+                //  REMOVED COMPLETION LOGIC and CALL UPLOAD MODAL
+                showUploadModal(); // Show the upload modal instead of completing
             } else {
-                console.log("Task completion cancelled by user or no task ID was set.");
+                console.log("Task completion cancelled by user.");
                 currentTaskToComplete = null; // Ensure reset if cancelled
             }
         }
