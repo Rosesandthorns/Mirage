@@ -512,13 +512,13 @@
         const analytics = firebase.analytics
         
         const firebaseConfig = {
-            apiKey: `${APIKey}`, // Using Netlify environment variable
-            authDomain: `${AuthD}`, // Using Netlify environment variable
-            projectId: `${PID}`, // Using Netlify environment variable
-            storageBucket: `${Bucket}`, // Using Netlify environment variable
-            messagingSenderId: `${SID}`, // Using Netlify environment variable
-            appId: `${AID}`, // Using Netlify environment variable
-            measurementId: `${MID}` // Using Netlify environment variable
+              apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+              authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+              projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+              storageBucket: import.meta.env.VITE_FIREBASE_BUCKET,
+              messagingSenderId: import.meta.env.VITE_FIREBASE_SENDER_ID,
+              appId: import.meta.env.VITE_FIREBASE_APP_ID,
+              measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
         };
 
         // --- Initialize Firebase ---
