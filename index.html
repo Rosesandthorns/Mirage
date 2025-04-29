@@ -509,20 +509,16 @@
         // Import Firebase modules (CDN) - Ensure these are at the TOP
         const firebaseApp = firebase.app;
         const firestore = firebase.firestore;
-        const analytics = firebase.analytics;
-
-        // --- Firebase Configuration ---
-        // IMPORTANT: Replace with your actual Firebase config.
-        // For security, consider using environment variables or a backend proxy
-        // instead of hardcoding keys directly in client-side code.
+        const analytics = firebase.analytics
+        
         const firebaseConfig = {
-            apiKey: "AIzaSyC8923ceG_Hcp5k3v0qjO_yYgKEoXB4n_A", // Replace with your actual API key
-            authDomain: "miragepark-1e12a.firebaseapp.com",
-            projectId: "miragepark-1e12a",
-            storageBucket: "miragepark-1e12a.appspot.com", // Updated storageBucket
-            messagingSenderId: "11545240206",
-            appId: "1:11545240206:web:d36635f6db96aa49025fdf",
-            measurementId: "G-K2KGDZ3Q17"
+            apiKey: `${APIKey}`, // Using Netlify environment variable
+            authDomain: `${AuthD}`, // Using Netlify environment variable
+            projectId: `${PID}`, // Using Netlify environment variable
+            storageBucket: `${Bucket}`, // Using Netlify environment variable
+            messagingSenderId: `${SID}`, // Using Netlify environment variable
+            appId: `${AID}`, // Using Netlify environment variable
+            measurementId: `${MID}` // Using Netlify environment variable
         };
 
         // --- Initialize Firebase ---
